@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pac-Man Clone</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+    :root {
+        --primary-color: #FFD700;
+        --secondary-color: #FF4500;
+        --background-color: #000000;
+        --surface-color: #1A1A1A;
+        --text-color: #FFFFFF;
+        --text-secondary-color: #B0B0B0;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        font-family: 'Press Start 2P', cursive;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    header {
+        background-color: var(--surface-color);
+        padding: 1rem;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        font-size: 2rem;
+        background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+    }
+
+    .cta-button {
+        background-color: var(--secondary-color);
+        color: var(--text-color);
+        border: 3px solid var(--primary-color);
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        font-family: 'Press Start 2P', cursive;
+        text-transform: uppercase;
+        border-radius: 0;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 1rem;
+        box-shadow: 0 0 10px var(--primary-color);
+    }
+
+    .cta-button:hover {
+        background-color: var(--primary-color);
+        color: var(--background-color);
+        transform: scale(1.05);
+    }
+
+    nav {
+        background-color: var(--surface-color);
+        padding: 0.5rem;
+    }
+
+    nav ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+    }
+
+    nav ul li {
+        margin: 0 1rem;
+    }
+
+    nav ul li a {
+        color: var(--text-color);
+        text-decoration: none;
+        font-weight: bold;
+        transition: color 0.3s ease;
+    }
+
+    nav ul li a:hover {
+        color: var(--primary-color);
+    }
+
+    main {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 2rem;
+        flex-grow: 1;
+    }
+
+    .game-container {
+        background-color: var(--surface-color);
+        border-radius: 10px;
+        padding: 1rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+    }
+
+    #gameCanvas {
+        border: 4px solid var(--primary-color);
+        border-radius: 0;
+        box-shadow: 0 0 20px var(--primary-color);
+    }
+
+    #score {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    .instructions {
+        background-color: var(--surface-color);
+        border-radius: 10px;
+        padding: 1rem;
+        margin-left: 2rem;
+        max-width: 300px;
+    }
+
+    .instructions h2 {
+        color: var(--primary-color);
+        margin-top: 0;
+    }
+
+    .instructions ul {
+        padding-left: 1.5rem;
+    }
+
+    .tooltip {
+        position: relative;
+        display: inline-block;
+        cursor: help;
+    }
+
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 200px;
+        background-color: var(--surface-color);
+        color: var(--text-color);
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        margin-left: -100px;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    footer {
+        background-color: var(--surface-color);
+        text-align: center;
+        padding: 1rem;
+        margin-top: auto;
+    }
+
+    @media (max-width: 768px) {
+        main {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .instructions {
+            margin-left: 0;
+            margin-top: 2rem;
+            max-width: 100%;
+        }
+    }
+</style>
+</head>
+<body>
+<header>
+    <h1>Pac-Man Clone </h1>
+    <button class="cta-button" onclick="startGame()">Start Game</button>
+</header>
+
+<nav>
+    <ul>
+        <li><a href="#game">Game</a></li>
+        <li><a href="#instructions">Instructions</a></li>
+        <li><a href="#about">About</a></li>
+    </ul>
+</nav>
+
+<main>
+    <div class="game-container">
+        <div id="score">Score: 0</div>
+        <canvas id="gameCanvas" width="448" height="496"></canvas>
+    </div>
+
+    <div class="instructions">
+        <h2>How to Play</h2>
+        <ul>
+            <li>Use arrow keys to move Pac-Man</li>
+            <li>Eat all the dots to win</li>
+            <li>Avoid the ghosts</li>
+            <li>
+                Power pellets 
+                <span class="tooltip">?
+                    <span class="tooltiptext">Eat power pellets to temporarily turn ghosts blue and eat them for bonus points!</span>
+                </span>
+            </li>
+        </ul>
+    </div>
+</main>
+
+<footer>
+    <p>&copy; 2024 Pac-Man Clone by dcoso. ❤️</p>
+</footer>
+
+<script>
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const CELL_SIZE = 16;
+const GRID_WIDTH = 28;
+const GRID_HEIGHT = 31;
+
+let pacman = { x: 13, y: 23, direction: 0, mouthOpen: 0 };
+let ghosts = [
+    { x: 13, y: 11, color: '#FF0000', direction: 0 },
+    { x: 14, y: 11, color: '#00FFFF', direction: 0 },
+    { x: 13, y: 12, color: '#FFB8FF', direction: 0 },
+    { x: 14, y: 12, color: '#FFB852', direction: 0 }
+];
+let score = 0;
+let grid = [];
+let lastGhostMove = 0;
+let lastPacmanMove = 0;
+const ghostMoveInterval = 500; // Move ghosts every 500ms
+const pacmanMoveInterval = 150; // Move Pac-Man every 150ms (adjust this value to fine-tune speed)
+
+let keyStates = {
+    ArrowUp: false,
+    ArrowDown: false,
+    ArrowLeft: false,
+    ArrowRight: false
+};
+let isMoving = false;
+
+function initGrid() {
+    const layout = [
+        '############################',
+        '#............##............#',
+        '#.####.#####.##.#####.####.#',
+        '#o####.#####.##.#####.####o#',
+        '#.####.#####.##.#####.####.#',
+        '#..........................#',
+        '#.####.##.########.##.####.#',
+        '#.####.##.########.##.####.#',
+        '#......##....##....##......#',
+        '######.##### ## #####.######',
+        '######.##### ## #####.######',
+        '######.##          ##.######',
+        '######.## ######## ##.######',
+        '######.## ######## ##.######',
+        '      .   ########   .      ',
+        '######.## ######## ##.######',
+        '######.## ######## ##.######',
+        '######.##          ##.######',
+        '######.## ######## ##.######',
+        '######.## ######## ##.######',
+        '#............##............#',
+        '#.####.#####.##.#####.####.#',
+        '#.####.#####.##.#####.####.#',
+        '#o..##.......  .......##..o#',
+        '###.##.##.########.##.##.###',
+        '###.##.##.########.##.##.###',
+        '#......##....##....##......#',
+        '#.##########.##.##########.#',
+        '#.##########.##.##########.#',
+        '#..........................#',
+        '############################'
+    ];
+
+    for (let y = 0; y < GRID_HEIGHT; y++) {
+        grid[y] = [];
+        for (let x = 0; x < GRID_WIDTH; x++) {
+            if (layout[y][x] === '#') {
+                grid[y][x] = 'wall';
+            } else if (layout[y][x] === '.') {
+                grid[y][x] = 'dot';
+            } else if (layout[y][x] === 'o') {
+                grid[y][x] = 'powerPellet';
+            } else {
+                grid[y][x] = 'empty';
+            }
+        }
+    }
+}
+
+function drawGrid() {
+    for (let y = 0; y < GRID_HEIGHT; y++) {
+        for (let x = 0; x < GRID_WIDTH; x++) {
+            if (grid[y][x] === 'wall') {
+                ctx.fillStyle = '#1919A6'; // More vibrant blue for walls
+                ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+            } else if (grid[y][x] === 'dot') {
+                ctx.fillStyle = '#FFD700'; // Gold color for dots
+                ctx.beginPath();
+                ctx.arc(x * CELL_SIZE + CELL_SIZE / 2, y * CELL_SIZE + CELL_SIZE / 2, 2, 0, Math.PI * 2);
+                ctx.fill();
+            } else if (grid[y][x] === 'powerPellet') {
+                ctx.fillStyle = '#FF4500'; // Orange-red for power pellets
+                ctx.beginPath();
+                ctx.arc(x * CELL_SIZE + CELL_SIZE / 2, y * CELL_SIZE + CELL_SIZE / 2, 4, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+    }
+}
+
+function drawPacman() {
+    ctx.fillStyle = '#FFFF00';
+    ctx.beginPath();
+    const mouthAngle = Math.PI / 4 * Math.sin(pacman.mouthOpen);
+    ctx.arc(
+        pacman.x * CELL_SIZE + CELL_SIZE / 2,
+        pacman.y * CELL_SIZE + CELL_SIZE / 2,
+        CELL_SIZE / 2,
+        (pacman.direction * Math.PI / 2) + mouthAngle,
+        (pacman.direction * Math.PI / 2) + (2 * Math.PI - mouthAngle)
+    );
+    ctx.lineTo(pacman.x * CELL_SIZE + CELL_SIZE / 2, pacman.y * CELL_SIZE + CELL_SIZE / 2);
+    ctx.fill();
+}
+
+function drawGhosts() {
+    ghosts.forEach(ghost => {
+        ctx.fillStyle = ghost.color;
+        ctx.beginPath();
+        ctx.arc(
+            ghost.x * CELL_SIZE + CELL_SIZE / 2,
+            ghost.y * CELL_SIZE + CELL_SIZE / 2,
+            CELL_SIZE / 2,
+            Math.PI,
+            0
+        );
+        ctx.lineTo(ghost.x * CELL_SIZE + CELL_SIZE, ghost.y * CELL_SIZE + CELL_SIZE);
+        ctx.lineTo(ghost.x * CELL_SIZE, ghost.y * CELL_SIZE + CELL_SIZE);
+        ctx.fill();
+    });
+}
+
+function movePacman(timestamp) {
+    if (timestamp - lastPacmanMove > pacmanMoveInterval) {
+        if (isMoving) {
+            const directions = [
+                { dx: 0, dy: -1 }, // Up
+                { dx: -1, dy: 0 }, // Left
+                { dx: 0, dy: 1 },  // Down
+                { dx: 1, dy: 0 }   // Right
+            ];
+
+            let newX = pacman.x;
+            let newY = pacman.y;
+
+            if (keyStates.ArrowUp) newY -= 1;
+            if (keyStates.ArrowDown) newY += 1;
+            if (keyStates.ArrowLeft) newX -= 1;
+            if (keyStates.ArrowRight) newX += 1;
+
+            if (newX >= 0 && newX < GRID_WIDTH && newY >= 0 && newY < GRID_HEIGHT && grid[newY][newX] !== 'wall') {
+                pacman.x = newX;
+                pacman.y = newY;
+
+                if (grid[newY][newX] === 'dot') {
+                    grid[newY][newX] = 'empty';
+                    score += 10;
+                } else if (grid[newY][newX] === 'powerPellet') {
+                    grid[newY][newX] = 'empty';
+                    score += 50;
+                    // TODO: Implement power pellet effects
+                }
+
+                document.getElementById('score').textContent = `Score: ${score}`;
+            }
+
+            // Update Pac-Man's direction based on the last pressed key
+            if (keyStates.ArrowUp) pacman.direction = 0;
+            else if (keyStates.ArrowLeft) pacman.direction = 1;
+            else if (keyStates.ArrowDown) pacman.direction = 2;
+            else if (keyStates.ArrowRight) pacman.direction = 3;
+
+            pacman.mouthOpen += 0.3;
+        }
+        lastPacmanMove = timestamp;
+    }
+}
+
+function moveGhosts() {
+    ghosts.forEach(ghost => {
+        const directions = [
+            { dx: 0, dy: -1 },
+            { dx: -1, dy: 0 },
+            { dx: 0, dy: 1 },
+            { dx: 1, dy: 0 }
+        ];
+
+        let validDirections = [];
+        for (let i = 0; i < 4; i++) {
+            const newX = ghost.x + directions[i].dx;
+            const newY = ghost.y + directions[i].dy;
+            if (newX >= 0 && newX < GRID_WIDTH && newY >= 0 && newY < GRID_HEIGHT && grid[newY][newX] !== 'wall') {
+                validDirections.push(i);
+            }
+        }
+
+        if (validDirections.length > 0) {
+            ghost.direction = validDirections[Math.floor(Math.random() * validDirections.length)];
+            ghost.x += directions[ghost.direction].dx;
+            ghost.y += directions[ghost.direction].dy;
+        }
+    });
+}
+
+function checkCollision() {
+    ghosts.forEach(ghost => {
+        if (ghost.x === pacman.x && ghost.y === pacman.y) {
+            alert('Game Over!');
+            initGame();
+        }
+    });
+}
+
+function gameLoop(timestamp) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawGrid();
+    movePacman(timestamp);
+    
+    // Only move ghosts every 500ms
+    if (timestamp - lastGhostMove > ghostMoveInterval) {
+        moveGhosts();
+        lastGhostMove = timestamp;
+    }
+    
+    drawPacman();
+    drawGhosts();
+    checkCollision();
+    requestAnimationFrame(gameLoop);
+}
+
+function initGame() {
+    initGrid();
+    pacman = { x: 13, y: 23, direction: 0, mouthOpen: 0 };
+    ghosts = [
+        { x: 13, y: 11, color: '#FF0000', direction: 0 },
+        { x: 14, y: 11, color: '#00FFFF', direction: 0 },
+        { x: 13, y: 12, color: '#FFB8FF', direction: 0 },
+        { x: 14, y: 12, color: '#FFB852', direction: 0 }
+    ];
+    score = 0;
+    document.getElementById('score').textContent = `Score: ${score}`;
+}
+
+document.addEventListener('keydown', (event) => {
+    const key = event.key;
+    if (key in keyStates) {
+        keyStates[key] = true;
+        isMoving = true;
+    }
+});
+
+document.addEventListener('keyup', (event) => {
+    const key = event.key;
+    if (key in keyStates) {
+        keyStates[key] = false;
+        isMoving = Object.values(keyStates).some(state => state);
+    }
+});
+
+function startGame() {
+    initGame();
+    requestAnimationFrame(gameLoop);
+}
+
+// Initialize the game when the page loads
+initGame();
+</script>
+</body>
+</html>
