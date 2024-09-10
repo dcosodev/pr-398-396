@@ -917,13 +917,16 @@ p {
    
     setLanguage('en');
 
-    async function fetchPinnedRepos() {
+async function fetchPinnedRepos() {
   try {
     const response = await fetch('pinned-repos.json');
     if (!response.ok) {
-      throw new Error('Failed to fetch pinned repos');
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
     const data = await response.json();
+    if (!Array.isArray(data)) {
+      throw new Error('Fetched data is not an array');
+    }
     return data;
   } catch (error) {
     console.error('Error fetching pinned repos:', error);
