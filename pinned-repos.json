@@ -1,1 +1,38 @@
-[]
+[
+    {
+        "name":  "news-hub",
+        "description":  "🐍 Python 🗄️ SQLite 🌐 FastAPI ⚛️ React Native 🎨 Tailwind CSS",
+        "url":  "https://github.com/dcosodev/news-hub",
+        "openGraphImageUrl":  "https://opengraph.githubassets.com/57825a2f96ef3b04769c856e124d3c69f90827d29e8a10ff37d5eeb695acca6f/dcosodev/news-hub"
+    },
+    {
+        "name":  "monkey-type-brython",
+        "description":  "Typing Game - Flask  - Brython",
+        "url":  "https://github.com/dcosodev/monkey-type-brython",
+        "openGraphImageUrl":  "https://opengraph.githubassets.com/df5d7853c4c2ab75e20d417f0f56a7d9b15fee3e9301135de95db8d5cc63b0ae/dcosodev/monkey-type-brython"
+    },
+    {
+        "name":  "urban-traffic-monitoring-system",
+        "description":  "🐍 Python 🗄️ SQLite 🌐Django⚛️ React Native 🎨 React Native Chart Kit",
+        "url":  "https://github.com/dcosodev/urban-traffic-monitoring-system",
+        "openGraphImageUrl":  "https://opengraph.githubassets.com/d14b866ea97e4493e011642373c9909a43fa78d5370b1ad5a90acedaea13535a/dcosodev/urban-traffic-monitoring-system"
+    },
+    {
+        "name":  "proyecto-alanturing",
+        "description":  "Spotfy Clone - Vanilla JavaScript - SCSS",
+        "url":  "https://github.com/dcosodev/proyecto-alanturing",
+        "openGraphImageUrl":  "https://opengraph.githubassets.com/1e0c53d0f6df3691332c70a7b6a5b8aa04054dd6214a2225b47a5dc3ffd1c94b/dcosodev/proyecto-alanturing"
+    },
+    {
+        "name":  "cognitve-face-detection",
+        "description":  ".NET API for face detection - C# - Microsoft Azure Cognitive Services",
+        "url":  "https://github.com/dcosodev/cognitve-face-detection",
+        "openGraphImageUrl":  "https://opengraph.githubassets.com/8e666540dfa8e0d465f8c116eebd459448c5e905ff8c9f0d83a6a5576fc6b2ad/dcosodev/cognitve-face-detection"
+    },
+    {
+        "name":  "task-manager-pro",
+        "description":  "Task manager that synchronizes with Todoist and Trello, automatically prioritizes tasks, and tracks productivity.",
+        "url":  "https://github.com/dcosodev/task-manager-pro",
+        "openGraphImageUrl":  "https://opengraph.githubassets.com/d3a8cf974297704e9f267c1b3909ed70ac0dae6cfe03da7e4a802be21603a9f2/dcosodev/task-manager-pro"
+    }
+]
