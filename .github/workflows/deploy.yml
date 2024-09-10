@@ -1,0 +1,30 @@
+name: Update Pinned Repos and Deploy
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Runs every day at midnight
+  push:
+    branches:
+      - main  # or your default branch
+  workflow_dispatch:  # Allows manual trigger
+
+jobs:
+  update-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Fetch pinned repos
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl -H "Authorization: Bearer $GITHUB_TOKEN" -H "Content-Type: application/json" -X POST -d '{
+            "query": "{ user(login: \"dcosodev\") { pinnedItems(first: 6, types: REPOSITORY) { edges { node { ... on Repository { name description url openGraphImageUrl } } } } } }"
+          }' https://api.github.com/graphql | jq '.data.user.pinnedItems.edges[].node' > pinned-repos.json
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
+          force_orphan: true
