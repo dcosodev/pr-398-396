@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TypeMaster Arcade</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --primary-color: #1a1a1a;
+        --secondary-color: #2a2a2a;
+        --accent-color: #00ff00;
+        --text-color: #ffffff;
+        --error-color: #ff0000;
+        --success-color: #00ff00;
+    }
+
+    body {
+        font-family: 'Press Start 2P', cursive;
+        background-color: #000000;
+        color: var(--text-color);
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    header {
+        background-color: var(--primary-color);
+        padding: 1rem;
+        text-align: center;
+        box-shadow: 0 0 10px rgba(0,255,0,0.5);
+    }
+
+    h1 {
+        margin: 0;
+        font-size: 2.5rem;
+        color: var(--accent-color);
+        text-shadow: 0 0 10px rgba(0,255,0,0.5);
+    }
+
+    .cta-button {
+        background-color: var(--accent-color);
+        color: var(--primary-color);
+        font-weight: bold;
+        padding: 0.75rem 1.5rem;
+        font-size: 1.1rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.1s;
+        text-transform: uppercase;
+        box-shadow: 0 0 10px rgba(0,255,0,0.5);
+        margin-top: 1rem;
+    }
+
+    .cta-button:hover {
+        background-color: #00dd00;
+    }
+
+    #arcade-stats {
+        font-size: 0.8rem;
+        margin-top: 1rem;
+        overflow: hidden;
+        height: 100px;
+    }
+
+    .stat-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem;
+        border-bottom: 1px solid var(--accent-color);
+        animation: scrollStats 5s linear infinite;
+    }
+
+    @keyframes scrollStats {
+        0% {
+            transform: translateY(100%);
+        }
+        100% {
+            transform: translateY(-100%);
+        }
+    }
+
+    @keyframes blink {
+        0% { opacity: 1; }
+        50% { opacity: 0.7; }
+        100% { opacity: 1; }
+    }
+
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: repeating-linear-gradient(
+            0deg,
+            rgba(0, 0, 0, 0.15),
+            rgba(0, 0, 0, 0.15) 1px,
+            transparent 1px,
+            transparent 2px
+        );
+        pointer-events: none;
+        animation: blink 0.5s infinite;
+    }
+
+    main {
+        flex-grow: 1;
+        padding: 2rem;
+        max-width: 800px;
+        margin: 0 auto;
+        width: 100%;
+    }
+
+    .section {
+        background-color: var(--secondary-color);
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0,255,0,0.3);
+    }
+
+    h2 {
+        color: var(--accent-color);
+        margin-top: 0;
+    }
+
+    select, textarea, #input-area {
+        width: 100%;
+        padding: 0.5rem;
+        margin-bottom: 1rem;
+        background-color: var(--primary-color);
+        color: var(--text-color);
+        border: 1px solid var(--accent-color);
+        border-radius: 4px;
+        font-family: 'Press Start 2P', cursive;
+    }
+
+    #game-text {
+        font-size: 1.2rem;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+        min-height: 100px;
+    }
+
+    #input-area {
+        height: 100px;
+        resize: none;
+    }
+
+    #stats {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 1rem;
+    }
+
+    .stat {
+        text-align: center;
+    }
+
+    .stat h3 {
+        margin: 0;
+        font-size: 0.8rem;
+    }
+
+    .stat p {
+        font-size: 1.2rem;
+        margin: 0.5rem 0;
+    }
+
+    .correct {
+        color: var(--success-color);
+    }
+
+    .incorrect {
+        color: var(--error-color);
+        text-decoration: underline;
+    }
+
+    .help-icon {
+        font-size: 0.8rem;
+        margin-left: 0.5rem;
+        cursor: help;
+        position: relative;
+    }
+
+    .tooltip {
+        visibility: hidden;
+        background-color: var(--primary-color);
+        color: var(--text-color);
+        text-align: center;
+        border-radius: 6px;
+        padding: 0.5rem;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        margin-left: -60px;
+        opacity: 0;
+        transition: opacity 0.3s;
+        font-size: 0.7rem;
+        width: 200px;
+    }
+
+    .help-icon:hover .tooltip {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    @media (max-width: 768px) {
+        h1 {
+            font-size: 1.8rem;
+        }
+
+        main {
+            padding: 1rem;
+        }
+
+        .section {
+            padding: 1rem;
+        }
+
+        #game-text {
+            font-size: 1rem;
+        }
+
+        .stat h3 {
+            font-size: 0.7rem;
+        }
+
+        .stat p {
+            font-size: 1rem;
+        }
+
+        .cta-button {
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        h1 {
+            font-size: 1.5rem;
+        }
+
+        main {
+            padding: 0.5rem;
+        }
+
+        .section {
+            padding: 0.8rem;
+        }
+
+        #game-text {
+            font-size: 0.9rem;
+        }
+
+        .stat h3 {
+            font-size: 0.6rem;
+        }
+
+        .stat p {
+            font-size: 0.9rem;
+        }
+
+        .cta-button {
+            font-size: 0.8rem;
+            padding: 0.4rem 0.8rem;
+        }
+
+        #arcade-stats {
+            font-size: 0.7rem;
+        }
+    }
+</style>
+</head>
+<body>
+    <header>
+        <h1>GorilaType Arcade</h1>
+        <p>Test your typing skills in the ultimate arcade challenge!</p>
+        <div id="arcade-stats">
+            <div class="stat-row">
+                <span>PLAYER001</span>
+                <span>WPM: 120</span>
+                <span>ACC: 98%</span>
+            </div>
+            <div class="stat-row">
+                <span>PLAYER002</span>
+                <span>WPM: 115</span>
+                <span>ACC: 97%</span>
+            </div>
+            <div class="stat-row">
+                <span>PLAYER003</span>
+                <span>WPM: 130</span>
+                <span>ACC: 99%</span>
+            </div>
+            <div class="stat-row">
+                <span>PLAYER004</span>
+                <span>WPM: 110</span>
+                <span>ACC: 96%</span>
+            </div>
+        </div>
+        <button class="cta-button" onclick="document.getElementById('game-container').scrollIntoView({behavior: 'smooth'})">
+            Insert Coin
+        </button>
+    </header>
+
+    <main>
+        <div id="game-container">
+            <div id="text-selection" class="section">
+                <h2>Select a paragraph <i class="fas fa-question-circle help-icon">
+                    <span class="tooltip">Choose from our pre-defined paragraphs to start your typing challenge.</span>
+                </i></h2>
+                <select id="paragraph-select">
+                    <option value="0">The quick brown fox jumps over the lazy dog.</option>
+                    <option value="1">To be or not to be, that is the question.</option>
+                    <option value="2">All that glitters is not gold.</option>
+                </select>
+            </div>
+
+            <div id="custom-text" class="section">
+                <h2>Enter your own text <i class="fas fa-question-circle help-icon">
+                    <span class="tooltip">Create a custom typing challenge by entering your own text here.</span>
+                </i></h2>
+                <textarea id="custom-input" rows="4" placeholder="Type or paste your custom text here..."></textarea>
+                <button id="use-custom" class="cta-button">Use Custom Text</button>
+            </div>
+
+            <div id="game-area" class="section">
+                <h2>Typing Challenge <i class="fas fa-question-circle help-icon">
+                    <span class="tooltip">Type the text below as accurately and quickly as you can. Your performance will be measured in real-time.</span>
+                </i></h2>
+                <button id="start-game" class="cta-button">Start Playing</button>
+                <div id="challenge-area" style="display: none;">
+                    <div id="game-text"></div>
+                    <textarea id="input-area" placeholder="Start typing here..." disabled></textarea>
+                    <div id="stats">
+                        <div class="stat">
+                            <h3>WPM</h3>
+                            <p id="wpm">0</p>
+                        </div>
+                        <div class="stat">
+                            <h3>Accuracy</h3>
+                            <p id="accuracy">100%</p>
+                        </div>
+                        <div class="stat">
+                            <h3>Time</h3>
+                            <p id="time">0s</p>
+                        </div>
+                    </div>
+                    <button id="restart" class="cta-button">Restart</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const paragraphs = [
+            "The quick brown fox jumps over the lazy dog.",
+            "To be or not to be, that is the question.",
+            "All that glitters is not gold."
+        ];
+
+        let currentText = "";
+        let startTime;
+        let timer;
+        let mistakes = 0;
+
+        const paragraphSelect = document.getElementById("paragraph-select");
+        const customInput = document.getElementById("custom-input");
+        const useCustomButton = document.getElementById("use-custom");
+        const gameArea = document.getElementById("game-area");
+        const gameText = document.getElementById("game-text");
+        const inputArea = document.getElementById("input-area");
+        const wpmDisplay = document.getElementById("wpm");
+        const accuracyDisplay = document.getElementById("accuracy");
+        const timeDisplay = document.getElementById("time");
+        const restartButton = document.getElementById("restart");
+        const startGameButton = document.getElementById("start-game");
+        const challengeArea = document.getElementById("challenge-area");
+
+        function initializeGame(text) {
+            currentText = text;
+            gameText.innerHTML = text;
+            inputArea.value = "";
+            mistakes = 0;
+            wpmDisplay.textContent = "0";
+            accuracyDisplay.textContent = "100%";
+            timeDisplay.textContent = "0s";
+            gameArea.style.display = "block";
+            challengeArea.style.display = "none";
+            startGameButton.style.display = "block";
+            inputArea.disabled = true;
+        }
+
+        function startGame() {
+            startTime = new Date();
+            challengeArea.style.display = "block";
+            startGameButton.style.display = "none";
+            inputArea.disabled = false;
+            inputArea.focus();
+
+            clearInterval(timer);
+            timer = setInterval(updateStats, 1000);
+        }
+
+        function updateStats() {
+            const currentTime = new Date();
+            const timeElapsed = (currentTime - startTime) / 1000;
+            const words = inputArea.value.trim().split(/\s+/).length;
+            const wpm = Math.round((words / timeElapsed) * 60);
+            const accuracy = Math.round(((currentText.length - mistakes) / currentText.length) * 100);
+
+            wpmDisplay.textContent = wpm;
+            accuracyDisplay.textContent = accuracy + "%";
+            timeDisplay.textContent = Math.round(timeElapsed) + "s";
+        }
+
+        paragraphSelect.addEventListener("change", () => {
+            const selectedText = paragraphs[paragraphSelect.value];
+            initializeGame(selectedText);
+        });
+
+        useCustomButton.addEventListener("click", () => {
+            const customText = customInput.value.trim();
+            if (customText) {
+                initializeGame(customText);
+            }
+        });
+
+        startGameButton.addEventListener("click", startGame);
+
+        inputArea.addEventListener("input", () => {
+            const inputText = inputArea.value;
+            const originalText = currentText.substring(0, inputText.length);
+            let html = "";
+
+            for (let i = 0; i < currentText.length; i++) {
+                if (i < inputText.length) {
+                    if (inputText[i] === currentText[i]) {
+                        html += `<span class="correct">${currentText[i]}</span>`;
+                    } else {
+                        html += `<span class="incorrect">${currentText[i]}</span>`;
+                        if (i >= mistakes) mistakes++;
+                    }
+                } else {
+                    html += currentText[i];
+                }
+            }
+
+            gameText.innerHTML = html;
+
+            if (inputText === currentText) {
+                clearInterval(timer);
+                inputArea.disabled = true;
+            }
+        });
+
+        restartButton.addEventListener("click", () => {
+            initializeGame(currentText);
+        });
+
+        initializeGame(paragraphs[0]);
+    </script>
+</body>
+</html>
