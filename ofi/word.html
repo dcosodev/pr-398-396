@@ -1,0 +1,385 @@
+<!-- 
+
+This HTML file represents a Word Online clone with a rich text editor and various functionalities for document management. The file includes:
+
+1. **Head Section**:
+  - Meta tags for character set and viewport settings.
+  - Title of the document.
+  - External scripts and stylesheets for `marked.js`, `Quill.js`, `Font Awesome`, Google Fonts, and Tailwind CSS.
+
+2. **Tailwind CSS Configuration**:
+  - Custom theme settings for font family, colors, and line height.
+
+3. **Custom Styles**:
+  - Styles for Quill editor container and toolbar.
+  - Styles for truncating text titles.
+  - Styles for a fixed citation element.
+
+4. **Body Section**:
+  - A sidebar with buttons for creating, deleting, renaming documents, and toggling the sidebar.
+  - Lists for displaying latest documents, categories, and tags.
+  - Main content area with a title input, Quill editor, markdown editor, and various form elements for category and tag management.
+  - A modal for delete confirmation.
+  - A citation element with a link.
+
+5. **JavaScript Section**:
+  - Initialization of Quill editor with a custom toolbar.
+  - Functions for toggling editor mode between Quill and Markdown.
+  - Functions for updating document title, creating new documents/folders, deleting items, renaming items, and toggling the sidebar.
+  - Utility functions for truncating titles and managing tags.
+  - Event listeners for adding categories and tags, and handling import/export format changes.
+  - Initial setup for Quill editor content and event listeners for delete confirmation modal.
+
+This file provides a comprehensive setup for a document management interface with rich text editing capabilities.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Word online clone</title>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: {
+        'inter': ['Inter', 'sans-serif'],
+      },
+      colors: {
+        'sidebar-bg': '#2d2d2d',
+        'sidebar-hover': '#3D2E25',
+      },
+      lineHeight: {
+        'reduced': '0.7',
+      }
+    }
+  }
+}
+</script>
+<style>
+  .ql-container {
+    font-family: 'Inter', sans-serif !important;
+  }
+  .ql-toolbar {
+    border-top-left-radius: 0.375rem;
+    border-top-right-radius: 0.375rem;
+  }
+  .ql-container {
+    border-bottom-left-radius: 0.375rem;
+    border-bottom-right-radius: 0.375rem;
+  }
+  .truncate-title {
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+  }
+
+  #citation {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+      }
+
+</style>
+</head>
+<body class="font-inter bg-gray-100">
+  <div class="flex h-screen">
+    <div id="sidebar" class="w-64 bg-sidebar-bg text-white p-6 overflow-y-auto transition-all duration-300 ease-in-out">
+      <div class="flex justify-between mb-6 bg-sidebar-bg p-2 rounded">
+        <button onclick="createNewDocument()" class="text-gray-300 hover:text-white"><i class="fas fa-plus-square"></i></button>
+        <button onclick="createNewFolder()" class="text-gray-300 hover:text-white"><i class="fas fa-folder-plus"></i></button>
+        <button onclick="deleteItem()" class="text-gray-300 hover:text-white"><i class="fas fa-trash"></i></button>
+        <button onclick="renameItem()" class="text-gray-300 hover:text-white"><i class="fas fa-pencil-alt"></i></button>
+        <button onclick="toggleSidebar()" class="text-gray-300 hover:text-white"><i class="fas fa-times"></i></button>
+      </div>
+      <h2 class="text-lg font-semibold mb-4 leading-reduced text-left">Latest Documents</h2>
+      <ul id="document-list" class="space-y-1">
+        <li class="hover:bg-sidebar-hover p-2 rounded transition duration-200 leading-reduced text-left"><span class="truncate-title" title="Daily Log 8/30/24">Daily Log 8/30/24</span></li>
+        <li class="hover:bg-sidebar-hover p-2 rounded transition duration-200 leading-reduced text-left"><span class="truncate-title" title="Experience Blueprinting">Experience Blueprinting</span></li>
+        <li class="hover:bg-sidebar-hover p-2 rounded transition duration-200 leading-reduced text-left"><span class="truncate-title" title="OGUX Practice Post">OGUX Practice Post</span></li>
+        <li class="hover:bg-sidebar-hover p-2 rounded transition duration-200 leading-reduced text-left"><span class="truncate-title" title="Daily Log 8/29/24">Daily Log 8/29/24</span></li>
+        <li class="hover:bg-sidebar-hover p-2 rounded transition duration-200 leading-reduced text-left"><span class="truncate-title" title="Morons of Twitter/X">Morons of Twitter/X</span></li>
+        <li class="hover:bg-sidebar-hover p-2 rounded transition duration-200 leading-reduced text-left"><span class="truncate-title" title="4th Density Concept">4th Density Concept</span></li>
+        <li class="hover:bg-sidebar-hover p-2 rounded transition duration-200 leading-reduced text-left"><span class="truncate-title" title="Elves Brain Dump">Elves Brain Dump</span></li>
+        <li class="hover:bg-sidebar-hover p-2 rounded transition duration-200 leading-reduced text-left"><span class="truncate-title" title="Brand Performance Review">Brand Performance Rev...</span></li>
+        <li class="hover:bg-sidebar-hover p-2 rounded transition duration-200 leading-reduced text-left"><span class="truncate-title" title="Portland Trip">Portland Trip</span></li>
+        <li class="hover:bg-sidebar-hover p-2 rounded transition duration-200 leading-reduced text-left"><span class="truncate-title" title="Pittsburgh Itinerary">Pittsburgh Itinerary</span></li>
+      </ul>
+      <div class="mt-8">
+        <h2 class="text-lg font-semibold mb-4 leading-reduced text-left">Categories</h2>
+        <ul id="category-list" class="space-y-1">
+          <li class="hover:bg-sidebar-hover p-2 rounded transition duration-200 leading-reduced text-left"><span class="truncate-title" title="Personal">Personal</span></li>
+          <li class="hover:bg-sidebar-hover p-2 rounded transition duration-200 leading-reduced text-left"><span class="truncate-title" title="Design">Design</span></li>
+          <li class="hover:bg-sidebar-hover p-2 rounded transition duration-200 leading-reduced text-left"><span class="truncate-title" title="Work">Work</span></li>
+          <li class="hover:bg-sidebar-hover p-2 rounded transition duration-200 leading-reduced text-left"><span class="truncate-title" title="Projects">Projects</span></li>
+          <li class="hover:bg-sidebar-hover p-2 rounded transition duration-200 leading-reduced text-left"><span class="truncate-title" title="Finance">Finance</span></li>
+        </ul>
+      </div>
+      <div class="mt-8">
+        <h2 class="text-lg font-semibold mb-4 leading-reduced text-left">Tags</h2>
+        <div id="tag-list" class="flex flex-wrap gap-2">
+          <span class="bg-gray-700 text-xs px-2 py-1 rounded-full leading-reduced">Research</span>
+          <span class="bg-gray-700 text-xs px-2 py-1 rounded-full leading-reduced">Journal</span>
+          <span class="bg-gray-700 text-xs px-2 py-1 rounded-full leading-reduced">Productivity</span>
+          <span class="bg-gray-700 text-xs px-2 py-1 rounded-full leading-reduced">East Coast</span>
+          <span class="bg-gray-700 text-xs px-2 py-1 rounded-full leading-reduced">Literature</span>
+        </div>
+      </div>
+    </div>
+    <button id="toggle-sidebar" class="fixed left-2 top-2 bg-sidebar-bg text-white p-2 rounded-full shadow-lg hidden"><i class="fas fa-chevron-right"></i></button>
+    <div class="flex-1 flex flex-col overflow-hidden">
+      <div class="bg-white shadow-md p-4 mb-4">
+        <input type="text" id="doc-title" value="Document Title" class="text-2xl font-bold w-full bg-transparent border-none focus:outline-none" onchange="updateDocumentTitle()">
+      </div>
+      <div class="flex-1 overflow-auto px-4">
+        <div id="editor" class="bg-white shadow-lg rounded-lg mb-6 h-[70vh]"></div>
+        <textarea id="markdown-editor" class="w-full h-[70vh] p-4 bg-white shadow-lg rounded-lg mb-6 hidden"></textarea>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div>
+            <label for="category-select" class="block text-sm font-medium text-gray-700 mb-1">Category:</label>
+            <select id="category-select" class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+              <option value="">Select a category</option>
+            </select>
+          </div>
+          <div>
+            <label for="import-select" class="block text-sm font-medium text-gray-700 mb-1">Import:</label>
+            <select id="import-select" class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+              <option value="">Select format</option>
+              <option value="markdown">Markdown</option>
+              <option value="html">HTML</option>
+              <option value="txt">TXT</option>
+            </select>
+          </div>
+          <div>
+            <label for="export-select" class="block text-sm font-medium text-gray-700 mb-1">Export:</label>
+            <select id="export-select" class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+              <option value="">Select format</option>
+              <option value="markdown">Markdown</option>
+              <option value="html">HTML</option>
+              <option value="txt">TXT</option>
+              <option value="pdf">PDF</option>
+            </select>
+          </div>
+          <div>
+            <label for="add-category" class="block text-sm font-medium text-gray-700 mb-1">Add Category:</label>
+            <input type="text" id="add-category" placeholder="New category" class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div>
+            <label for="add-tags" class="block text-sm font-medium text-gray-700 mb-1">Add Tags:</label>
+            <input type="text" id="add-tags" placeholder="Add tags (comma-separated)" class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+          </div>
+        </div>
+        <div id="document-tags" class="flex flex-wrap gap-2 mb-6"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="deleteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+      <div class="mt-3 text-center">
+        <h3 class="text-lg leading-6 font-medium text-gray-900">Delete Confirmation</h3>
+        <div class="mt-2 px-7 py-3">
+          <p class="text-sm text-gray-500">Are you sure you want to delete this item?</p>
+        </div>
+        <div class="items-center px-4 py-3">
+          <button id="confirmDelete" class="px-4 py-2 bg-red-500 text-white text-base font-medium rounded-md w-24 mr-2 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300">Yes</button>
+          <button id="cancelDelete" class="px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md w-24 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="citation">
+    <a href="https://www.dcoso.dev" style="color: white; text-decoration: none;">dcoso.dev</a>
+  </div>
+  
+
+  <script>
+    var quill = new Quill('#editor', {
+      theme: 'snow',
+      modules: {
+        toolbar: [
+          [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+          ['bold', 'italic', 'underline', 'strike'],
+          ['blockquote', 'code-block'],
+          [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+          [{ 'script': 'sub'}, { 'script': 'super' }],
+          [{ 'indent': '-1'}, { 'indent': '+1' }],
+          [{ 'direction': 'rtl' }],
+          [{ 'color': [] }, { 'background': [] }],
+          [{ 'font': [] }],
+          [{ 'align': [] }],
+          ['clean'],
+          ['link', 'image', 'video']
+        ]
+      }
+    });
+
+    let isMarkdownMode = false;
+
+    function toggleEditorMode() {
+      const quillEditor = document.getElementById('editor');
+      const markdownEditor = document.getElementById('markdown-editor');
+      
+      if (isMarkdownMode) {
+        quillEditor.style.display = 'block';
+        markdownEditor.style.display = 'none';
+        quill.root.innerHTML = marked(markdownEditor.value);
+      } else {
+        quillEditor.style.display = 'none';
+        markdownEditor.style.display = 'block';
+        markdownEditor.value = quill.root.innerHTML;
+      }
+      
+      isMarkdownMode = !isMarkdownMode;
+    }
+
+    function updateDocumentTitle() {
+      const title = document.getElementById('doc-title').value;
+      console.log('Document title updated:', title);
+     
+    }
+
+    function createNewDocument() {
+      console.log('Creating new document');
+      
+    }
+
+    function createNewFolder() {
+      console.log('Creating new folder');
+     
+    }
+
+    function deleteItem() {
+      document.getElementById('deleteModal').classList.remove('hidden');
+    }
+
+    function confirmDelete() {
+      console.log('Item deleted');
+      document.getElementById('deleteModal').classList.add('hidden');
+      
+    }
+
+    function cancelDelete() {
+      document.getElementById('deleteModal').classList.add('hidden');
+    }
+
+    function renameItem() {
+      console.log('Renaming item');
+     
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const toggleBtn = document.getElementById('toggle-sidebar');
+      sidebar.classList.toggle('-translate-x-full');
+      toggleBtn.classList.toggle('hidden');
+    }
+
+    function truncateTitle(title, maxLength = 30) {
+      if (title.length <= maxLength) return title;
+      return title.substr(0, maxLength - 3) + '...';
+    }
+
+    function addTag(tag) {
+      const tagList = document.getElementById('tag-list');
+      const newTag = document.createElement('span');
+      newTag.className = 'bg-gray-700 text-xs px-2 py-1 rounded-full leading-reduced';
+      newTag.textContent = tag;
+      tagList.appendChild(newTag);
+    }
+
+    function addDocumentTag(tag) {
+      const documentTags = document.getElementById('document-tags');
+      const newTag = document.createElement('span');
+      newTag.className = 'bg-blue-500 text-white text-xs px-2 py-1 rounded-full leading-reduced flex items-center';
+      newTag.innerHTML = `${tag} <button class="ml-1 focus:outline-none" onclick="removeDocumentTag(this)">×</button>`;
+      documentTags.appendChild(newTag);
+    }
+
+    function removeDocumentTag(button) {
+      button.parentElement.remove();
+    }
+
+    document.getElementById('add-category').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        const newCategory = this.value.trim();
+        if (newCategory) {
+          const categoryList = document.getElementById('category-list');
+          const newItem = document.createElement('li');
+          newItem.className = 'hover:bg-sidebar-hover p-2 rounded transition duration-200 leading-reduced text-left';
+          const span = document.createElement('span');
+          span.className = 'truncate-title';
+          span.title = newCategory;
+          span.textContent = truncateTitle(newCategory);
+          newItem.appendChild(span);
+          categoryList.appendChild(newItem);
+          this.value = '';
+          console.log('New category added:', newCategory);
+        }
+      }
+    });
+
+    document.getElementById('add-tags').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        const newTags = this.value.split(',').map(tag => tag.trim()).filter(tag => tag);
+        newTags.forEach(tag => {
+          addTag(tag);
+          addDocumentTag(tag);
+        });
+        this.value = '';
+      }
+    });
+
+    
+    const categorySelect = document.getElementById('category-select');
+    const categories = ['Personal', 'Design', 'Work', 'Projects', 'Finance'];
+    categories.forEach(category => {
+      const option = document.createElement('option');
+      option.value = category.toLowerCase();
+      option.textContent = category;
+      categorySelect.appendChild(option);
+    });
+
+   
+    document.getElementById('import-select').addEventListener('change', function() {
+      console.log('Import format selected:', this.value);
+    
+    });
+
+    document.getElementById('export-select').addEventListener('change', function() {
+      console.log('Export format selected:', this.value);
+      
+    });
+
+   
+    quill.root.innerHTML = '<h1>Welcome to Your Document</h1><p>Start typing here...</p>';
+
+    document.getElementById('confirmDelete').addEventListener('click', confirmDelete);
+    document.getElementById('cancelDelete').addEventListener('click', cancelDelete);
+
+    
+    document.querySelectorAll('.truncate-title').forEach(el => {
+      el.textContent = truncateTitle(el.textContent);
+    });
+  </script>
+</body>
+</html>

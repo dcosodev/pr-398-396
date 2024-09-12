@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Art Window</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+      canvas {
+        display: block;
+      }
+      #citation {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="citation">
+      <a href="https://www.dcoso.dev" style="color: white; text-decoration: none;">dcoso.dev</a>
+    </div>
+    <script>
+      let shapes_arr = [...Array(24)].map((_, i) => i);
+      let block_size;
+      let matte_block_num = 2;
+      let block_num_w, block_num_h;
+      let offset_w, offset_h;
+      let palette;
+      let shadowGraphics;
+      let rs;
+
+      function setup() {
+        createCanvas(windowWidth, windowHeight);
+        colorMode(HSB, 360, 100, 100, 100);
+        shadowGraphics = createShadowGraphics(width, height);
+        rs = width * height;
+      }
+
+      function createShadowGraphics(w, h) {
+        let g = createGraphics(w, h);
+        let window_num = int(random(3, 8));
+        let window_w = w / 10;
+        let window_h = h / 5;
+        let window_margin = min(window_w, window_h) / 3;
+        g.background(0, 150);
+        g.randomSeed(rs);
+        let shadowPoint = createVector(
+          (g.random() * g.width) / 2,
+          (g.random() * g.height) / 2
+        );
+        g.push();
+        g.translate(shadowPoint.x, shadowPoint.y);
+        g.shearY(PI / 12);
+        g.erase();
+        for (let j = 0; j < window_num; j++) {
+          for (let i = 0; i < window_num; i++) {
+            let x = i * (window_w + window_margin);
+            let y = j * (window_h + window_margin);
+            g.rect(x, y, window_w, window_h);
+          }
+        }
+        g.noErase();
+
+        return g;
+      }
+
+      function draw() {
+        blendMode(BLEND);
+
+        background(0, 0, 80);
+        randomSeed(width * height);
+        palette = shuffle(random(colorScheme).colors);
+
+        block_size = 30;
+        offset_w = width / 10;
+        block_num_w = int((width - offset_w * 2) / block_size);
+        offset_w = (width - block_size * block_num_w) / 2;
+
+        offset_h = offset_w;
+        block_num_h = int((height - offset_h * 2) / block_size);
+        offset_h = (height - block_size * block_num_h) / 2;
+
+        if (matte_block_num < min(block_num_h, block_num_w)) {
+          drawLongShadow(offset_w, offset_h, color(220, 10, 0, 10), PI / 8);
+        }
+
+        for (let j = 0; j < block_num_h; j++) {
+          for (let i = 0; i < block_num_w; i++) {
+            let x = offset_w + i * block_size;
+            let y = offset_h + j * block_size;
+            let block_pos = getBlockPosition(
+              i,
+              j,
+              block_num_w - 1,
+              block_num_h - 1
+            );
+            drawBlock(block_pos, x, y, block_size);
+          }
+        }
+        blendMode(MULTIPLY);
+        push();
+        drawingContext.filter = "blur(30px)";
+        image(
+          shadowGraphics,
+          -30,
+          -30,
+          shadowGraphics.width + 60,
+          shadowGraphics.height + 60
+        );
+        pop();
+      }
+
+      function windowResized() {
+        resizeCanvas(windowWidth, windowHeight);
+        shadowGraphics = createShadowGraphics(width, height);
+      }
+
+      function getAngle() {
+        return atan2(mouseY - height / 2, mouseX - width / 2);
+      }
+
+      function drawLongShadow(offset_w, offset_h, col, theta = PI / 4) {
+        let p1 = createVector(width - offset_w, offset_h);
+        let p2 = createVector(width - offset_w, height - offset_h);
+        let p3 = createVector(offset_w, height - offset_h);
+        let p4 = createVector(offset_w, offset_h);
+        let p = [];
+        if (theta < PI / 2) {
+          p = [p1, p2, p3];
+        } else {
+          p = [p2, p3, p4];
+        }
+        if (theta < 0) {
+          if (theta < -PI / 2) {
+            p = [p3, p4, p1];
+          } else {
+            p = [p4, p1, p2];
+          }
+        }
+        fill(col);
+        noStroke();
+        beginShape();
+        vertex(p[0].x, p[0].y);
+        vertex(p[1].x, p[1].y);
+        vertex(p[2].x, p[2].y);
+        p[0].add(p5.Vector.fromAngle(theta).mult(max(width, height)));
+        p[1].add(
+          p5.Vector.fromAngle(theta).mult(
+            max(width, height) + sqrt(sq(width / 2) + sq(height / 2))
+          )
+        );
+        p[2].add(p5.Vector.fromAngle(theta).mult(max(width, height)));
+        vertex(p[2].x, p[2].y);
+        vertex(p[1].x, p[1].y);
+        vertex(p[0].x, p[0].y);
+        endShape();
+      }
+
+      function getBlockPosition(i, j, iMax, jMax) {
+        if (
+          (i == 0 && j == 0) ||
+          (i == 0 && j == jMax) ||
+          (i == iMax && j == jMax) ||
+          (i == iMax && j == 0)
+        ) {
+          return "CORNER";
+        } else if (i == 0 || j == jMax || i == iMax || j == 0) {
+          return "BORDER";
+        } else if (
+          i < matte_block_num ||
+          j > jMax - matte_block_num ||
+          i > iMax - matte_block_num ||
+          j < matte_block_num
+        ) {
+          return "MATTE";
+        } else {
+          return "NORMAL";
+        }
+      }
+
+      function drawBlock(block_pos, x, y, block_size) {
+        push();
+        switch (block_pos) {
+          case "CORNER":
+            fill(0, 0, 20);
+            noStroke();
+            rect(x, y, block_size + 1);
+            break;
+          case "BORDER":
+            noStroke();
+            fill(0, 0, 20);
+            rect(x, y, block_size + 1);
+            break;
+          case "MATTE":
+            noStroke();
+            fill(0, 0, 100);
+            rect(x, y, block_size + 1);
+            break;
+          case "NORMAL":
+            noStroke();
+            let n = int(
+              noise(
+                width / 2 + x / width,
+                height / 2 + y / height,
+                frameCount / 400
+              ) *
+                shapes_arr.length *
+                2
+            );
+            push();
+            translate(x + block_size / 2, y + block_size / 2);
+            rotate((TWO_PI / 4) * int(random(4)));
+            fill(palette[n % palette.length]);
+            drawShape(block_size + 1, 3, n % shapes_arr.length);
+            pop();
+            break;
+        }
+        pop();
+      }
+
+      let colorScheme = [
+        {
+          name: "Benedictus",
+          colors: ["#F27EA9", "#366CD9", "#5EADF2", "#636E73", "#F2E6D8"]
+        },
+        {
+          name: "Cross",
+          colors: ["#D962AF", "#58A6A6", "#8AA66F", "#F29F05", "#F26D6D"]
+        },
+        {
+          name: "Demuth",
+          colors: ["#222940", "#D98E04", "#F2A950", "#BF3E21", "#F2F2F2"]
+        },
+        {
+          name: "Hiroshige",
+          colors: ["#1B618C", "#55CCD9", "#F2BC57", "#F2DAAC", "#F24949"]
+        },
+        {
+          name: "Hokusai",
+          colors: ["#074A59", "#F2C166", "#F28241", "#F26B5E", "#F2F2F2"]
+        },
+        {
+          name: "Hokusai Blue",
+          colors: ["#023059", "#459DBF", "#87BF60", "#D9D16A", "#F2F2F2"]
+        },
+        {
+          name: "Java",
+          colors: ["#632973", "#02734A", "#F25C05", "#F29188", "#F2E0DF"]
+        },
+        {
+          name: "Kandinsky",
+          colors: ["#8D95A6", "#0A7360", "#F28705", "#D98825", "#F2F2F2"]
+        },
+        {
+          name: "Monet",
+          colors: ["#4146A6", "#063573", "#5EC8F2", "#8C4E03", "#D98A29"]
+        },
+        {
+          name: "Nizami",
+          colors: ["#034AA6", "#72B6F2", "#73BFB1", "#F2A30F", "#F26F63"]
+        },
+        {
+          name: "Renoir",
+          colors: ["#303E8C", "#F2AE2E", "#F28705", "#D91414", "#F2F2F2"]
+        }
+      ];
+
+      function drawShape(size, weight, shapeIndex) {
+        switch (shapeIndex % 24) {
+          case 0:
+            ellipse(0, 0, size);
+            break;
+          case 1:
+            rect(-size / 2, -size / 2, size, size);
+            break;
+          case 2:
+            triangle(-size / 2, size / 2, 0, -size / 2, size / 2, size / 2);
+            break;
+          case 3:
+            arc(0, 0, size, size, 0, PI);
+            break;
+          case 4:
+            line(-size / 2, -size / 2, size / 2, size / 2);
+            line(-size / 2, size / 2, size / 2, -size / 2);
+            break;
+          case 5:
+            beginShape();
+            for (let i = 0; i < 5; i++) {
+              let angle = (TWO_PI * i) / 5 - HALF_PI;
+              let x = (cos(angle) * size) / 2;
+              let y = (sin(angle) * size) / 2;
+              vertex(x, y);
+            }
+            endShape(CLOSE);
+            break;
+          case 6:
+            rect(-size / 4, -size / 2, size / 2, size);
+            break;
+          case 7:
+            ellipse(0, 0, size, size / 2);
+            break;
+          case 8:
+            quad(-size / 2, 0, 0, -size / 2, size / 2, 0, 0, size / 2);
+            break;
+          case 9:
+            arc(0, 0, size, size, PI, TWO_PI);
+            line(-size / 2, 0, size / 2, 0);
+            break;
+          case 10:
+            beginShape();
+            vertex(-size / 2, size / 2);
+            vertex(0, -size / 2);
+            vertex(size / 2, size / 2);
+            endShape(CLOSE);
+            line(-size / 4, 0, size / 4, 0);
+            break;
+          case 11:
+            rect(-size / 2, -size / 2, size, size / 2);
+            ellipse(0, size / 4, size, size / 2);
+            break;
+          case 12:
+            arc(-size / 4, 0, size / 2, size, HALF_PI, PI + HALF_PI);
+            arc(size / 4, 0, size / 2, size, -HALF_PI, HALF_PI);
+            break;
+          case 13:
+            line(0, -size / 2, 0, size / 2);
+            line(-size / 2, 0, size / 2, 0);
+            ellipse(0, 0, size / 3);
+            break;
+          case 14:
+            beginShape();
+            vertex(-size / 2, -size / 2);
+            vertex(size / 2, -size / 2);
+            vertex(size / 2, size / 2);
+            vertex(-size / 2, size / 2);
+            vertex(0, 0);
+            endShape(CLOSE);
+            break;
+          case 15:
+            arc(0, 0, size, size, 0, HALF_PI);
+            arc(0, 0, size, size, PI, PI + HALF_PI);
+            break;
+          case 16:
+            rect(-size / 2, -size / 2, size / 3, size);
+            rect(size / 6, -size / 2, size / 3, size);
+            break;
+          case 17:
+            ellipse(-size / 4, 0, size / 2);
+            ellipse(size / 4, 0, size / 2);
+            break;
+          case 18:
+            beginShape();
+            for (let i = 0; i < 3; i++) {
+              let angle = (TWO_PI * i) / 3 - HALF_PI;
+              let x = (cos(angle) * size) / 2;
+              let y = (sin(angle) * size) / 2;
+              vertex(x, y);
+            }
+            endShape(CLOSE);
+            ellipse(0, 0, size / 3);
+            break;
+          case 19:
+            arc(0, -size / 4, size, size / 2, 0, PI);
+            arc(0, size / 4, size, size / 2, PI, TWO_PI);
+            break;
+          case 20:
+            line(-size / 2, -size / 2, size / 2, size / 2);
+            line(-size / 2, size / 2, size / 2, -size / 2);
+            ellipse(0, 0, size / 2);
+            break;
+          case 21:
+            rect(-size / 2, -size / 2, size, size / 3);
+            rect(-size / 2, -size / 6, size, size / 3);
+            rect(-size / 2, size / 6, size, size / 3);
+            break;
+          case 22:
+            arc(0, 0, size, size, 0, TWO_PI / 3);
+            arc(0, 0, size, size, PI, PI + TWO_PI / 3);
+            break;
+          case 23:
+            quad(-size / 2, 0, 0, -size / 2, size / 2, 0, 0, size / 2);
+            line(-size / 4, -size / 4, size / 4, size / 4);
+            line(-size / 4, size / 4, size / 4, -size / 4);
+            break;
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,865 @@
+<!--
+
+DESCRIPTION:
+This HTML file represents a Loan Calculator web application. It includes a form for users to input loan details, such as loan amount, interest rate, loan term, and other related fields. The application calculates and displays the monthly payment, total payment, total interest, and total cost of the loan. It also provides additional features like loan comparison, prepayment impact, and scenario simulation. The results are visualized using a Chart.js line chart for loan amortization.
+
+STRUCTURE:
+- HTML5 document structure with a head and body section.
+- Head section includes meta tags, title, external CSS and JS links, and internal CSS styles.
+- Body section includes:
+  - Header with a ticker for financial updates and a call-to-action button.
+  - Navigation menu for quick access to different sections.
+  - Main container with sections for the loan calculator, results, loan comparison, prepayment impact, scenario simulation, amortization chart, and instructions.
+  - Footer with copyright information and a citation link.
+  - Theme switcher for toggling between light and dark themes.
+
+STYLES:
+- CSS variables for theme colors and styles.
+- Responsive design with media queries for different screen sizes.
+- Custom styles for various elements like buttons, inputs, tooltips, and charts.
+
+FUNCTIONALITY:
+- JavaScript for handling user interactions, form validation, loan calculations, and chart rendering.
+- Event listeners for form submission, mortgage type selection, prepayment calculation, scenario simulation, and theme toggling.
+- Functions for calculating loan details, displaying results, creating amortization charts, and showing/hiding tooltips.
+
+DEPENDENCIES:
+- Chart.js for rendering the amortization chart.
+- Google Fonts for custom fonts.
+- Font Awesome for icons.
+- External CSS for additional styles.
+
+USAGE:
+1. Enter the loan amount, interest rate, loan term, and other details in the form.
+2. Click the "Calculate" button to see the loan details.
+3. Use the navigation menu to explore additional features like loan comparison and prepayment impact.
+4. Toggle the theme using the theme switcher button.
+
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loan Calculator</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;400;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+</head>
+<style>
+:root {
+  --primary-color: #1E3A8A;
+  --secondary-color: #0F172A;
+  --background-color: #0F172A;
+  --text-color: #E2E8F0;
+  --accent-color: #FCD34D;
+  --success-color: #10B981;
+  --card-bg: #1E293B;
+  --input-bg: #334155;
+  --input-border: #475569;
+}
+
+body {
+  font-family: 'Roboto Slab', serif;
+  line-height: 1.6;
+  color: var(--text-color);
+  background-color: var(--background-color);
+  background-image: 
+    linear-gradient(to right, rgba(30, 58, 138, 0.1) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(30, 58, 138, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+header {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  padding: 20px 0;
+  text-align: center;
+}
+
+.ticker-wrap {
+  width: 100%;
+  overflow: hidden;
+  background-color: var(--secondary-color);
+  padding-left: 100%;
+  box-sizing: content-box;
+}
+
+.ticker {
+  display: inline-block;
+  white-space: nowrap;
+  padding-right: 100%;
+  box-sizing: content-box;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  animation-name: ticker;
+  animation-duration: 30s;
+}
+
+.ticker__item {
+  display: inline-block;
+  padding: 0 2rem;
+  font-size: 1rem;
+  color: var(--accent-color);
+}
+
+@keyframes ticker {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-100%, 0, 0);
+  }
+}
+
+h1, h2, h3 {
+  font-family: 'Merriweather', serif;
+  font-weight: 700;
+}
+
+.cta-button {
+  background-color: var(--accent-color);
+  color: var(--secondary-color);
+  border: none;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cta-button:hover {
+  background-color: var(--success-color);
+  color: var(--text-color);
+}
+
+nav {
+  background-color: var(--secondary-color);
+  padding: 10px 0;
+  margin-bottom: 20px;
+}
+
+nav ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+}
+
+nav ul li {
+  margin: 0 10px;
+}
+
+nav ul li a {
+  color: var(--text-color);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s;
+}
+
+nav ul li a:hover {
+  color: var(--accent-color);
+}
+
+.calculator {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  background-color: var(--card-bg);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.input-group {
+  margin-bottom: 15px;
+  position: relative;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+input[type="number"], select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--input-border);
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+button {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #388E3C;
+}
+
+.results {
+  background-color: var(--card-bg);
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.error {
+  color: var(--accent-color);
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.chart-container {
+  position: relative;
+  height: 400px;
+  width: 100%;
+  margin-top: 20px;
+  background-color: var(--card-bg);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.help-icon {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  border-radius: 50%;
+  text-align: center;
+  line-height: 20px;
+  font-size: 14px;
+  margin-left: 5px;
+  cursor: help;
+}
+
+.tooltip {
+  position: absolute;
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  z-index: 1000;
+  display: none;
+  max-width: 200px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+  .calculator {
+    grid-template-columns: 1fr;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  nav ul {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  nav ul li {
+    margin: 5px 0;
+  }
+}
+
+.instructions {
+  background-color: var(--card-bg);
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.instructions h2 {
+  color: var(--primary-color);
+  margin-bottom: 10px;
+}
+
+.instructions ol {
+  padding-left: 20px;
+}
+
+.instructions li {
+  margin-bottom: 10px;
+}
+
+.example {
+  background-color: var(--secondary-color);
+  padding: 15px;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.example pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+footer {
+  text-align: center;
+  padding: 20px 0;
+  margin-top: 40px;
+  background-color: var(--secondary-color);
+}
+
+.comparison, .prepayment, .scenario-simulation {
+  background-color: var(--card-bg);
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.theme-switcher {
+  display: flex;
+  align-items: center;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+}
+
+.theme-switcher button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+  color: var(--text-color);
+  padding: 5px;
+}
+
+.bank-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+}
+body.light-theme {
+  --primary-color: #f6faff;
+  --secondary-color: #f6f7fa;
+  --background-color: #F7FAFC;
+  --text-color: #2D3748;
+  --accent-color: #F6AD55;
+  --success-color: #48BB78;
+  --card-bg: #FFFFFF;
+  --input-bg: #EDF2F7;
+  --input-border: #CBD5E0;
+}
+
+input:focus, select:focus, button:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+#citation {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+      }
+
+</style>
+</head>
+<body>
+<header>
+  <div class="ticker-wrap">
+    <div class="ticker">
+      <div class="ticker__item">NASDAQ: +1.2%</div>
+      <div class="ticker__item">DOW: -0.5%</div>
+      <div class="ticker__item">S&P 500: +0.8%</div>
+      <div class="ticker__item">EUR/USD: 1.1865</div>
+      <div class="ticker__item">Gold: $1,812.30</div>
+    </div>
+  </div>
+  <h1>Wall Street Loan Calculator</h1>
+  <button class="cta-button">Get Started</button>
+</header>
+
+<nav>
+  <ul>
+    <li><a href="#calculator">Calculator</a></li>
+    <li><a href="#results">Results</a></li>
+    <li><a href="#chart">Amortization Chart</a></li>
+    <li><a href="#instructions">Instructions</a></li>
+  </ul>
+</nav>
+
+<div class="container">
+  <div id="calculator" class="calculator">
+    <div class="inputs">
+      <div class="input-group">
+        <label for="loanAmount">
+          Loan Amount:
+          <span class="help-icon" title="Enter the total amount you wish to borrow">?</span>
+        </label>
+        <input type="number" id="loanAmount" min="0" step="1000" required>
+        <div class="error" id="loanAmountError"></div>
+      </div>
+
+      <div class="input-group">
+        <label for="interestRate">
+          Interest Rate (%):
+          <span class="help-icon" title="Enter the annual interest rate for the loan">?</span>
+        </label>
+        <input type="number" id="interestRate" min="0" max="100" step="0.1" required>
+        <div class="error" id="interestRateError"></div>
+      </div>
+
+      <div class="input-group">
+        <label for="loanTerm">
+          Loan Term (years):
+          <span class="help-icon" title="Enter the duration of the loan in years">?</span>
+        </label>
+        <input type="number" id="loanTerm" min="1" max="50" required>
+        <div class="error" id="loanTermError"></div>
+      </div>
+
+      <div class="input-group">
+        <label for="mortgageType">Mortgage Type:</label>
+        <select id="mortgageType">
+          <option value="fixed">Fixed Rate</option>
+          <option value="variable">Variable Rate (Euribor)</option>
+        </select>
+      </div>
+      <div class="input-group" id="euriborGroup" style="display:none;">
+        <label for="euribor">Euribor (%):</label>
+        <input type="number" id="euribor" min="0" max="20" step="0.1">
+      </div>
+      <div class="input-group" id="differentialGroup" style="display:none;">
+        <label for="differential">Differential (%):</label>
+        <input type="number" id="differential" min="0" max="5" step="0.1">
+      </div>
+      <div class="input-group">
+        <label for="taxes">Taxes (IAJD) (%):</label>
+        <input type="number" id="taxes" min="0" max="10" step="0.1">
+      </div>
+      <div class="input-group">
+        <label for="insurance">Insurance (annual):</label>
+        <input type="number" id="insurance" min="0" step="100">
+      </div>
+      <div class="input-group">
+        <label for="commissions">Commissions:</label>
+        <input type="number" id="commissions" min="0" step="100">
+      </div>
+      <div class="input-group">
+        <label for="currency">Currency:</label>
+        <select id="currency">
+          <option value="USD">USD ($)</option>
+          <option value="EUR">EUR (€)</option>
+          <option value="GBP">GBP (£)</option>
+        </select>
+      </div>
+
+      <button id="calculateBtn">Calculate</button>
+    </div>
+
+    <div id="results" class="results">
+      <h2>Results</h2>
+      <p>Monthly Payment: <span id="monthlyPayment"></span></p>
+      <p>Total Payment: <span id="totalPayment"></span></p>
+      <p>Total Interest: <span id="totalInterest"></span></p>
+      <p>Total Cost: <span id="totalCost"></span></p>
+    </div>
+  </div>
+
+  <div id="comparison" class="comparison">
+    <h2>Loan Comparison</h2>
+    <div id="comparisonResults"></div>
+  </div>
+
+  <div id="prepayment" class="prepayment">
+    <h2>Prepayment Impact</h2>
+    <div class="input-group">
+      <label for="prepaymentAmount">Prepayment Amount:</label>
+      <input type="number" id="prepaymentAmount" min="0" step="1000">
+    </div>
+    <button id="calculatePrepayment">Calculate Prepayment Impact</button>
+    <div id="prepaymentResults"></div>
+  </div>
+
+  <div id="scenarioSimulation" class="scenario-simulation">
+    <h2>Scenario Simulation</h2>
+    <div class="input-group">
+      <label for="scenarioRate">Simulated Interest Rate (%):</label>
+      <input type="number" id="scenarioRate" min="0" max="20" step="0.1">
+    </div>
+    <button id="simulateScenario">Simulate Scenario</button>
+    <div id="scenarioResults"></div>
+  </div>
+
+  <div id="chart" class="chart-container">
+    <canvas id="amortizationChart"></canvas>
+  </div>
+
+  <div id="instructions" class="instructions">
+    <h2>How to Use the Loan Calculator</h2>
+    <ol>
+      <li>Enter the loan amount you wish to borrow in the "Loan Amount" field.</li>
+      <li>Input the annual interest rate in the "Interest Rate (%)" field.</li>
+      <li>Specify the loan term in years in the "Loan Term (years)" field.</li>
+      <li>Select your preferred mortgage type from the dropdown menu.</li>
+      <li>Click the "Calculate" button to see your results.</li>
+    </ol>
+    <div class="example">
+      <h3>Example:</h3>
+      <pre>
+Loan Amount: $200,000
+Interest Rate: 3.5%
+Loan Term: 30 years
+Currency: USD
+
+Result:
+Monthly Payment: $898.09
+Total Payment: $323,312.18
+Total Interest: $123,312.18
+      </pre>
+    </div>
+  </div>
+
+  <div class="theme-switcher">
+    <svg class="bank-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M3 3v18h18V3H3zm16 16H5V5h14v14zM11 7h2v2h-2V7zm0 4h2v2h-2v-2zm0 4h2v2h-2v-2zm-4-8h2v2H7V7zm0 4h2v2H7v-2zm0 4h2v2H7v-2zm8-8h2v2h-2V7zm0 4h2v2h-2v-2zm0 4h2v2h-2v-2z"/>
+    </svg>
+    <button id="toggleTheme" aria-label="Toggle theme">
+      <i class="fas fa-adjust"></i>
+    </button>
+  </div>
+</div>
+
+<footer>
+  <p>&copy; 2024 Loan Calculator.</p>
+  <div id="citation">
+    <a href="https://www.dcoso.dev" style="color: white; text-decoration: none;">dcoso.dev</a>
+  </div>
+</footer>
+
+<script>
+const loanAmountInput = document.getElementById('loanAmount');
+const interestRateInput = document.getElementById('interestRate');
+const loanTermInput = document.getElementById('loanTerm');
+const currencySelect = document.getElementById('currency');
+const calculateBtn = document.getElementById('calculateBtn');
+const resultsDiv = document.getElementById('results');
+const monthlyPaymentSpan = document.getElementById('monthlyPayment');
+const totalPaymentSpan = document.getElementById('totalPayment');
+const totalInterestSpan = document.getElementById('totalInterest');
+const totalCostSpan = document.getElementById('totalCost');
+
+const mortgageTypeSelect = document.getElementById('mortgageType');
+const euriborGroup = document.getElementById('euriborGroup');
+const differentialGroup = document.getElementById('differentialGroup');
+const euriborInput = document.getElementById('euribor');
+const differentialInput = document.getElementById('differential');
+const taxesInput = document.getElementById('taxes');
+const insuranceInput = document.getElementById('insurance');
+const commissionsInput = document.getElementById('commissions');
+const prepaymentAmountInput = document.getElementById('prepaymentAmount');
+const calculatePrepaymentBtn = document.getElementById('calculatePrepayment');
+const scenarioRateInput = document.getElementById('scenarioRate');
+const simulateScenarioBtn = document.getElementById('simulateScenario');
+const toggleThemeBtn = document.getElementById('toggleTheme');
+
+let amortizationChart;
+
+calculateBtn.addEventListener('click', calculateLoan);
+mortgageTypeSelect.addEventListener('change', toggleVariableRateInputs);
+calculatePrepaymentBtn.addEventListener('click', calculatePrepaymentImpact);
+simulateScenarioBtn.addEventListener('click', simulateScenario);
+toggleThemeBtn.addEventListener('click', toggleTheme);
+
+// Add event listeners for tooltips
+document.querySelectorAll('.help-icon').forEach(icon => {
+  icon.addEventListener('mouseenter', showTooltip);
+  icon.addEventListener('mouseleave', hideTooltip);
+});
+
+function toggleVariableRateInputs() {
+  const isVariable = mortgageTypeSelect.value === 'variable';
+  euriborGroup.style.display = isVariable ? 'block' : 'none';
+  differentialGroup.style.display = isVariable ? 'block' : 'none';
+  interestRateInput.disabled = isVariable;
+}
+
+function calculateLoan() {
+  if (!validateInputs()) return;
+
+  const loanAmount = parseFloat(loanAmountInput.value);
+  const loanTerm = parseInt(loanTermInput.value) * 12;
+  const currency = currencySelect.value;
+  const mortgageType = mortgageTypeSelect.value;
+  
+  let interestRate;
+  if (mortgageType === 'fixed') {
+    interestRate = parseFloat(interestRateInput.value) / 100 / 12;
+  } else {
+    const euribor = parseFloat(euriborInput.value) / 100;
+    const differential = parseFloat(differentialInput.value) / 100;
+    interestRate = (euribor + differential) / 12;
+  }
+
+  const taxes = parseFloat(taxesInput.value) / 100 * loanAmount;
+  const insurance = parseFloat(insuranceInput.value) * loanTerm / 12;
+  const commissions = parseFloat(commissionsInput.value);
+
+  const x = Math.pow(1 + interestRate, loanTerm);
+  const monthlyPayment = (loanAmount * x * interestRate) / (x - 1);
+  const totalPayment = monthlyPayment * loanTerm;
+  const totalInterest = totalPayment - loanAmount;
+  const totalCost = totalPayment + taxes + insurance + commissions;
+
+  displayResults(monthlyPayment, totalPayment, totalInterest, totalCost, currency);
+  createAmortizationChart(loanAmount, interestRate, loanTerm);
+}
+
+function validateInputs() {
+  let isValid = true;
+
+  if (loanAmountInput.value <= 0) {
+    document.getElementById('loanAmountError').textContent = 'Please enter a valid loan amount.';
+    isValid = false;
+  } else {
+    document.getElementById('loanAmountError').textContent = '';
+  }
+
+  if (mortgageTypeSelect.value === 'fixed') {
+    if (interestRateInput.value < 0 || interestRateInput.value > 100) {
+      document.getElementById('interestRateError').textContent = 'Please enter a valid interest rate between 0 and 100.';
+      isValid = false;
+    } else {
+      document.getElementById('interestRateError').textContent = '';
+    }
+  } else {
+    if (euriborInput.value < 0 || euriborInput.value > 20 || differentialInput.value < 0 || differentialInput.value > 5) {
+      document.getElementById('interestRateError').textContent = 'Please enter a valid Euribor and differential.';
+      isValid = false;
+    } else {
+      document.getElementById('interestRateError').textContent = '';
+    }
+  }
+
+  if (loanTermInput.value <= 0 || loanTermInput.value > 50) {
+    document.getElementById('loanTermError').textContent = 'Please enter a valid loan term between 1 and 50 years.';
+    isValid = false;
+  } else {
+    document.getElementById('loanTermError').textContent = '';
+  }
+
+  return isValid;
+}
+
+function displayResults(monthlyPayment, totalPayment, totalInterest, totalCost, currency) {
+  const formatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: currency,
+  });
+
+  monthlyPaymentSpan.textContent = formatter.format(monthlyPayment);
+  totalPaymentSpan.textContent = formatter.format(totalPayment);
+  totalInterestSpan.textContent = formatter.format(totalInterest);
+  totalCostSpan.textContent = formatter.format(totalCost);
+
+  resultsDiv.style.display = 'block';
+}
+
+function calculatePrepaymentImpact() {
+  const prepaymentAmount = parseFloat(prepaymentAmountInput.value);
+  // Implement prepayment impact calculation logic here
+  // Update the prepaymentResults div with the results
+}
+
+function simulateScenario() {
+  const scenarioRate = parseFloat(scenarioRateInput.value) / 100 / 12;
+  // Implement scenario simulation logic here
+  // Update the scenarioResults div with the results
+}
+
+function toggleTheme() {
+  document.body.classList.toggle('light-theme');
+  const themeIcon = document.querySelector('#toggleTheme i');
+  themeIcon.classList.toggle('fa-sun');
+  themeIcon.classList.toggle('fa-moon');
+}
+
+// Initialize theme based on user preference
+if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+  document.body.classList.add('light-theme');
+  document.querySelector('#toggleTheme i').classList.add('fa-moon');
+} else {
+  document.querySelector('#toggleTheme i').classList.add('fa-sun');
+}
+
+function createAmortizationChart(loanAmount, initialInterestRate, loanTerm) {
+  const labels = [];
+  const principalData = [];
+  const interestData = [];
+
+  let remainingBalance = loanAmount;
+  const monthlyPayment = (loanAmount * Math.pow(1 + initialInterestRate, loanTerm) * initialInterestRate) / (Math.pow(1 + initialInterestRate, loanTerm) - 1);
+
+  for (let month = 1; month <= loanTerm; month++) {
+    labels.push(month);
+    
+    const interestPayment = remainingBalance * initialInterestRate;
+    const principalPayment = monthlyPayment - interestPayment;
+
+    principalData.push(principalPayment);
+    interestData.push(interestPayment);
+
+    remainingBalance -= principalPayment;
+  }
+
+  if (amortizationChart) {
+    amortizationChart.destroy();
+  }
+
+  const ctx = document.getElementById('amortizationChart').getContext('2d');
+  amortizationChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Principal',
+          data: principalData,
+          borderColor: 'rgba(46, 204, 113, 1)',
+          backgroundColor: 'rgba(46, 204, 113, 0.2)',
+          fill: true,
+        },
+        {
+          label: 'Interest',
+          data: interestData,
+          borderColor: 'rgba(231, 76, 60, 1)',
+          backgroundColor: 'rgba(231, 76, 60, 0.2)',
+          fill: true,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        title: {
+          display: true,
+          text: 'Loan Amortization',
+          color: '#ecf0f1',
+          font: {
+            size: 18,
+          },
+        },
+        legend: {
+          labels: {
+            color: '#ecf0f1',
+          },
+        },
+      },
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Month',
+            color: '#ecf0f1',
+          },
+          ticks: {
+            color: '#ecf0f1',
+          },
+          grid: {
+            color: 'rgba(255, 255, 255, 0.1)',
+          },
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Amount',
+            color: '#ecf0f1',
+          },
+          ticks: {
+            color: '#ecf0f1',
+          },
+          grid: {
+            color: 'rgba(255, 255, 255, 0.1)',
+          },
+        },
+      },
+    },
+  });
+}
+
+function showTooltip(event) {
+  const tooltip = document.createElement('div');
+  tooltip.className = 'tooltip';
+  tooltip.textContent = event.target.getAttribute('title');
+  
+  document.body.appendChild(tooltip);
+  
+  const rect = event.target.getBoundingClientRect();
+  tooltip.style.top = `${rect.bottom + 5}px`;
+  tooltip.style.left = `${rect.left}px`;
+  tooltip.style.display = 'block';
+  
+  event.target.tooltip = tooltip;
+}
+
+function hideTooltip(event) {
+  if (event.target.tooltip) {
+    event.target.tooltip.remove();
+    event.target.tooltip = null;
+  }
+}
+
+// Smooth scrolling for navigation links
+document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function (e) {
+    e.preventDefault();
+    document.querySelector(this.getAttribute('href')).scrollIntoView({
+      behavior: 'smooth'
+    });
+  });
+});
+</script>
+</body></html>

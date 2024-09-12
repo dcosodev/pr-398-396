@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>VPN Interface</title>
+    <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.4/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+        :root {
+            --primary-color: #5e35b1;
+            --secondary-color: #3949ab;
+            --accent-color: #00bcd4;
+            --text-color: #ffffff;
+            --background-color: #1a1a2e;
+            --sidebar-width: 80px;
+            --transition-speed: 0.3s;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+
+        #root {
+            height: 100%;
+        }
+
+        .app-container {
+            display: flex;
+            height: 100%;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            position: relative;
+            z-index: 1000;
+        }
+
+        .sidebar-icons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+        }
+
+        .sidebar-icons .icon {
+            font-size: 24px;
+            margin-bottom: 30px;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .sidebar-icons .icon:hover {
+            color: var(--accent-color);
+        }
+
+        .sidebar-icons .bottom-icons {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .world-map {
+            flex: 1;
+            background: linear-gradient(135deg, #9c27b0, #2196f3);
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .status-bar {
+            background-color: rgba(26, 26, 46, 0.8);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            border-radius: 0 0 15px 15px;
+        }
+
+        .connection-panel {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            background-color: rgba(26, 26, 46, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            z-index: 1000;
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .status-indicator.connected {
+            background-color: #4caf50;
+        }
+
+        .status-indicator.connecting {
+            background-color: #ffc107;
+        }
+
+        .status-indicator.disconnected {
+            background-color: #f44336;
+        }
+
+        .server-select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            border: none;
+            border-radius: 5px;
+        }
+
+        .connect-button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--accent-color);
+            color: var(--text-color);
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .connect-button:hover {
+            background-color: #00acc1;
+        }
+
+        .specialty-servers {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .specialty-server-btn {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-bottom: 10px;
+            width: 48%;
+        }
+
+        .specialty-server-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .security-features {
+            margin-top: 20px;
+        }
+
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .toggle-switch input[type="checkbox"] {
+            display: none;
+        }
+
+        .toggle-switch label {
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+            position: relative;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .toggle-switch label::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: white;
+            top: 2px;
+            left: 2px;
+            transition: left 0.3s ease;
+        }
+
+        .toggle-switch input[type="checkbox"]:checked + label {
+            background-color: var(--accent-color);
+        }
+
+        .toggle-switch input[type="checkbox"]:checked + label::after {
+            left: 28px;
+        }
+
+        .toggle-switch span {
+            margin-left: 10px;
+        }
+
+        .language-select, .theme-toggle {
+            margin-top: 20px;
+        }
+
+        .language-select select, .theme-toggle button {
+            width: 100%;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .server-icon {
+            cursor: pointer;
+            transition: r 0.3s ease;
+        }
+
+        .server-icon:hover {
+            r: 7;
+        }
+
+        .tooltip {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            pointer-events: none;
+        }
+
+        .panel-toggle {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                flex-direction: row;
+                justify-content: space-around;
+                padding: 10px 0;
+            }
+
+            .sidebar-icons {
+                flex-direction: row;
+            }
+
+            .sidebar-icons .icon {
+                margin: 0 10px;
+            }
+
+            .sidebar-icons .bottom-icons {
+                position: static;
+                flex-direction: row;
+            }
+
+            .main-content {
+                padding: 10px;
+            }
+
+            .connection-panel {
+                position: static;
+                width: auto;
+                margin-bottom: 10px;
+            }
+
+            .specialty-servers {
+                flex-wrap: wrap;
+            }
+
+            .specialty-server-btn {
+                flex: 1 0 40%;
+                margin: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        const App = () => {
+            const [connectionStatus, setConnectionStatus] = useState('disconnected');
+            const [selectedServer, setSelectedServer] = useState('');
+            const [securityFeatures, setSecurityFeatures] = useState({
+                cyberSec: false,
+                killSwitch: false,
+                autoConnect: false,
+                splitTunneling: false
+            });
+            const [language, setLanguage] = useState('en');
+            const [theme, setTheme] = useState('dark');
+            const [isPanelExpanded, setIsPanelExpanded] = useState(true);
+            const mapRef = useRef(null);
+
+            const handleServerChange = (event) => {
+                setSelectedServer(event.target.value);
+            };
+
+            const handleConnect = () => {
+                if (connectionStatus === 'disconnected') {
+                    setConnectionStatus('connecting');
+                    setTimeout(() => {
+                        setConnectionStatus('connected');
+                    }, 2000);
+                } else {
+                    setConnectionStatus('disconnected');
+                    setSelectedServer('');
+                }
+            };
+
+            const handleSpecialtyServer = (serverType) => {
+                alert(`Connecting to ${serverType} server...`);
+            };
+
+            const toggleSecurityFeature = (feature) => {
+                setSecurityFeatures(prev => ({
+                    ...prev,
+                    [feature]: !prev[feature]
+                }));
+            };
+
+            const handleLanguageChange = (event) => {
+                setLanguage(event.target.value);
+            };
+
+            const toggleTheme = () => {
+                setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+            };
+
+            const togglePanel = () => {
+                setIsPanelExpanded(prev => !prev);
+            };
+
+            useEffect(() => {
+                // Initialize the world map
+                const width = mapRef.current.offsetWidth;
+                const height = mapRef.current.offsetHeight;
+
+                const svg = d3.select(mapRef.current)
+                    .append("svg")
+                    .attr("width", "100%")
+                    .attr("height", "100%")
+                    .attr("viewBox", `0 0 ${width} ${height}`)
+                    .attr("preserveAspectRatio", "xMidYMid meet");
+
+                const projection = d3.geoMercator()
+                    .scale(width / 2 / Math.PI)
+                    .translate([width / 2, height / 1.5]);
+
+                const path = d3.geoPath().projection(projection);
+
+                const zoom = d3.zoom()
+                    .scaleExtent([1, 8])
+                    .on("zoom", zoomed);
+
+                svg.call(zoom);
+
+                function zoomed(event) {
+                    svg.selectAll("path")
+                        .attr("transform", event.transform);
+                    svg.selectAll("circle")
+                        .attr("transform", event.transform)
+                        .attr("r", 5 / event.transform.k);
+                }
+
+                d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json").then(function(world) {
+                    svg.append("g")
+                        .selectAll("path")
+                        .data(topojson.feature(world, world.objects.countries).features)
+                        .enter().append("path")
+                        .attr("d", path)
+                        .attr("fill", "rgba(255, 255, 255, 0.1)")
+                        .attr("stroke", "rgba(255, 255, 255, 0.3)")
+                        .attr("stroke-width", 0.5);
+
+                    const servers = [
+                        {name: "New York", coords: [-74, 40.7], count: 358, load: 65, latency: 23},
+                        {name: "London", coords: [-0.1, 51.5], count: 672, load: 78, latency: 45},
+                        {name: "Tokyo", coords: [139.7, 35.7], count: 124, load: 42, latency: 87},
+                        {name: "Sydney", coords: [151.2, -33.9], count: 96, load: 31, latency: 102},
+                        {name: "São Paulo", coords: [-46.6, -23.5], count: 45, load: 58, latency: 76},
+                    ];
+
+                    svg.selectAll("circle")
+                        .data(servers)
+                        .enter()
+                        .append("circle")
+                        .attr("cx", d => projection(d.coords)[0])
+                        .attr("cy", d => projection(d.coords)[1])
+                        .attr("r", 5)
+                        .attr("fill", "white")
+                        .attr("class", "server-icon")
+                        .on("mouseover", showTooltip)
+                        .on("mouseout", hideTooltip)
+                        .on("click", connectToServer);
+
+                    const tooltip = d3.select("body").append("div")
+                        .attr("class", "tooltip")
+                        .style("opacity", 0);
+
+                    function showTooltip(event, d) {
+                        tooltip.transition()
+                            .duration(200)
+                            .style("opacity", .9);
+                        tooltip.html(`${d.name}<br/>Servers: ${d.count}<br/>Load: ${d.load}%<br/>Latency: ${d.latency}ms`)
+                            .style("left", (event.pageX + 10) + "px")
+                            .style("top", (event.pageY - 28) + "px");
+                    }
+
+                    function hideTooltip() {
+                        tooltip.transition()
+                            .duration(500)
+                            .style("opacity", 0);
+                    }
+
+                    function connectToServer(event, d) {
+                        setSelectedServer(d.name);
+                        handleConnect();
+                    }
+                });
+            }, []);
+
+            return (
+                <div className="app-container">
+                    <div className="sidebar">
+                        <div className="sidebar-icons">
+                            <i className="icon fas fa-home"></i>
+                            <i className="icon fas fa-globe"></i>
+                            <i className="icon fas fa-shield-alt"></i>
+                            <i className="icon fas fa-file-alt"></i>
+                            <i className="icon fas fa-bullseye"></i>
+                            <div className="bottom-icons">
+                                <i className="icon fas fa-rocket"></i>
+                                <i className="icon fas fa-cog"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="main-content">
+                        <div className="connection-panel" style={{ height: isPanelExpanded ? 'auto' : '60px' }}>
+                            <button className="panel-toggle" onClick={togglePanel}>
+                                <i className={`fas fa-caret-${isPanelExpanded ? 'up' : 'down'}`}></i>
+                            </button>
+                            <div className="connection-status">
+                                <div className={`status-indicator ${connectionStatus}`}></div>
+                                <span>{connectionStatus.charAt(0).toUpperCase() + connectionStatus.slice(1)} {selectedServer && `to ${selectedServer}`}</span>
+                            </div>
+                            {isPanelExpanded && (
+                                <>
+                                    <select className="server-select" value={selectedServer} onChange={handleServerChange}>
+                                        <option value="">Select a server</option>
+                                        <option value="United Kingdom">United Kingdom</option>
+                                        <option value="United States">United States</option>
+                                        <option value="Japan">Japan</option>
+                                    </select>
+                                    <button className="connect-button" onClick={handleConnect}>
+                                        {connectionStatus === 'disconnected' ? 'Connect' : 'Disconnect'}
+                                    </button>
+                                    <div className="specialty-servers">
+                                        <button className="specialty-server-btn" onClick={() => handleSpecialtyServer('Double VPN')}>Double VPN</button>
+                                        <button className="specialty-server-btn" onClick={() => handleSpecialtyServer('P2P')}>P2P</button>
+                                        <button className="specialty-server-btn" onClick={() => handleSpecialtyServer('Onion over VPN')}>Onion over VPN</button>
+                                        <button className="specialty-server-btn" onClick={() => handleSpecialtyServer('Obfuscated')}>Obfuscated</button>
+                                    </div>
+                                    <div className="security-features">
+                                        <div className="toggle-switch">
+                                            <input type="checkbox" id="cyberSec" checked={securityFeatures.cyberSec} onChange={() => toggleSecurityFeature('cyberSec')} />
+                                            <label htmlFor="cyberSec"></label>
+                                            <span>CyberSec</span>
+                                        </div>
+                                        <div className="toggle-switch">
+                                            <input type="checkbox" id="killSwitch" checked={securityFeatures.killSwitch} onChange={() => toggleSecurityFeature('killSwitch')} />
+                                            <label htmlFor="killSwitch"></label>
+                                            <span>Kill Switch</span>
+                                        </div>
+                                        <div className="toggle-switch">
+                                            <input type="checkbox" id="autoConnect" checked={securityFeatures.autoConnect} onChange={() => toggleSecurityFeature('autoConnect')} />
+                                            <label htmlFor="autoConnect"></label>
+                                            <span>Auto Connect</span>
+                                        </div>
+                                        <div className="toggle-switch">
+                                            <input type="checkbox" id="splitTunneling" checked={securityFeatures.splitTunneling} onChange={() => toggleSecurityFeature('splitTunneling')} />
+                                            <label htmlFor="splitTunneling"></label>
+                                            <span>Split Tunneling</span>
+                                        </div>
+                                    </div>
+                                    <div className="language-select">
+                                        <select value={language} onChange={handleLanguageChange}>
+                                            <option value="en">English</option>
+                                            <option value="es">Español</option>
+                                            <option value="fr">Français</option>
+                                        </select>
+                                    </div>
+                                    <div className="theme-toggle">
+                                        <button onClick={toggleTheme}>
+                                            {theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+                                        </button>
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                        <div className="world-map" ref={mapRef}></div>
+                        <div className="status-bar">
+                            <span>IP: 192.168.1.1</span>
+                            <span>Speed: 150 Mbps</span>
+                            <span>Data Usage: 1.5 GB</span>
+                            <span>Connected: 2h 15m</span>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>

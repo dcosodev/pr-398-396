@@ -1,3 +1,52 @@
+<!--
+
+This HTML file creates a Pac-Man clone game. It includes the following sections:
+
+1. **HTML Structure**:
+    - `<!DOCTYPE html>`: Declares the document type.
+    - `<html lang="en">`: Sets the language of the document to English.
+    - `<head>`: Contains meta information, title, and styles.
+    - `<body>`: Contains the main content of the page.
+
+2. **Head Section**:
+    - Meta tags for character set and viewport settings.
+    - Title of the page.
+    - Inline CSS styles for the game layout and design.
+
+3. **CSS Styles**:
+    - Import of Google Fonts.
+    - CSS variables for colors.
+    - Styling for body, header, buttons, navigation, main content, game container, canvas, score, instructions, tooltips, and footer.
+    - Media query for responsive design.
+
+4. **Body Section**:
+    - `header`: Contains the game title and a start button.
+    - `nav`: Navigation links to different sections of the page.
+    - `main`: Contains the game canvas and instructions.
+    - `footer`: Footer with copyright information.
+    - `#citation`: Fixed position citation for the developer.
+
+5. **JavaScript**:
+    - Initialization of the game grid and layout.
+    - Functions to draw the grid, Pac-Man, and ghosts.
+    - Movement logic for Pac-Man and ghosts.
+    - Collision detection.
+    - Game loop to continuously update the game state.
+    - Event listeners for keyboard input.
+    - `startGame` function to initialize and start the game.
+
+6. **Game Logic**:
+    - Pac-Man and ghosts are represented as objects with properties for position and direction.
+    - The grid is represented as a 2D array with different cell types (wall, dot, power pellet, empty).
+    - Pac-Man and ghosts move based on keyboard input and predefined intervals.
+    - Score is updated based on Pac-Man's actions.
+    - Collision detection to check if Pac-Man collides with ghosts.
+
+This file combines HTML, CSS, and JavaScript to create an interactive Pac-Man clone game that can be played in a web browser.
+-->
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <meta charset="UTF-8">
@@ -187,11 +236,23 @@
             max-width: 100%;
         }
     }
+    #citation {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+      }
+
 </style>
 </head>
 <body>
 <header>
-    <h1>Pac-Man Clone </h1>
+    <h1>Pac-Man </h1>
     <button class="cta-button" onclick="startGame()">Start Game</button>
 </header>
 
@@ -226,8 +287,12 @@
 </main>
 
 <footer>
-    <p>&copy; 2024 Pac-Man Clone by dcoso. ❤️</p>
+    <p>&copy; 2024 Pac-Man Clone by dcoso.dev</p>
 </footer>
+<div id="citation">
+    <a href="https://www.dcoso.dev" style="color: white; text-decoration: none;">dcoso.dev</a>
+  </div>
+  
 
 <script>
 const canvas = document.getElementById('gameCanvas');
@@ -248,7 +313,7 @@ let grid = [];
 let lastGhostMove = 0;
 let lastPacmanMove = 0;
 const ghostMoveInterval = 500; // Move ghosts every 500ms
-const pacmanMoveInterval = 150; // Move Pac-Man every 150ms (adjust this value to fine-tune speed)
+const pacmanMoveInterval = 150; // Move Pac-Man every 150ms 
 
 let keyStates = {
     ArrowUp: false,

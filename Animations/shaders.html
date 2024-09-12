@@ -1,3 +1,43 @@
+<!-- 
+
+This HTML file creates a customizable complex multicolored shader with a mirror effect using WebGL. 
+The shader can be customized through a UI menu that allows the user to adjust various parameters such as animation speed, iterations, color shift, zoom, number of mirrors, and color palette.
+
+Elements:
+- <canvas id="shaderCanvas">: The canvas element where the shader is rendered.
+- <button id="toggleMenu">: Button to toggle the visibility of the customization menu.
+- <button id="randomizeButton">: Button to randomize shader parameters.
+- <div id="customizeMenu">: The customization menu containing various controls for adjusting shader parameters.
+
+Styles:
+- Basic styles for body, html, canvas, and UI elements to ensure proper layout and appearance.
+
+Shaders:
+- Vertex Shader: Simple shader that sets the vertex position.
+- Fragment Shader: Complex shader that generates the multicolored pattern with mirror effect based on various uniform parameters.
+
+JavaScript:
+- WebGL setup and shader compilation.
+- Functions to handle canvas resizing, shader rendering, and UI interactions.
+- Event listeners for UI controls to update shader parameters in real-time.
+- Function to randomize shader parameters and update the UI accordingly.
+
+Uniforms:
+- uResolution: The resolution of the canvas.
+- uTime: The current time, used for animation.
+- uIterations: Number of iterations for the shader effect.
+- uColorShift: Amount of color shift in the shader.
+- uZoom: Zoom level of the shader.
+- uColor1, uColor2, uColor3, uColor4: Colors used in the shader palette.
+- uMirrors: Number of mirrors for the mirror effect.
+
+UI Controls:
+- Sliders for adjusting speed, iterations, color shift, zoom, and number of mirrors.
+- Color pickers for selecting colors in the shader palette.
+- Buttons for toggling the customization menu and randomizing shader parameters.
+-->
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

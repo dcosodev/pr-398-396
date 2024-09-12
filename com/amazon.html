@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amazon.com: Compras en línea de electrónicos, ropa, computadoras, libros, DVDs y más</title>
+<style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #EAEDED;
+    color: #0F1111;
+  }
+  header {
+    background-color: #131921;
+    padding: 10px 0;
+    display: flex;
+    align-items: center;
+  }
+  .logo {
+    color: #FF9900;
+    font-size: 24px;
+    font-weight: bold;
+    text-decoration: none;
+    margin-left: 20px;
+  }
+  .search-bar {
+    flex-grow: 1;
+    margin: 0 20px;
+  }
+  .search-input {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+  }
+  .header-nav {
+    display: flex;
+    align-items: center;
+  }
+  .header-link {
+    color: white;
+    text-decoration: none;
+    margin-right: 20px;
+    font-size: 14px;
+  }
+  nav {
+    background-color: #232F3E;
+    padding: 10px 0;
+  }
+  nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 10px;
+    font-size: 14px;
+  }
+  .container {
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  .hero {
+    background-image: url('https://m.media-amazon.com/images/G/01/AmazonExports/Fuji/2020/May/Hero/Fuji_TallHero_Home_v2_en_US_1x._CB429090084_.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 300px;
+    display: flex;
+    align-items: flex-end;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .hero-content {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 4px;
+  }
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+  }
+  .product-card {
+    background-color: white;
+    border-radius: 4px;
+    padding: 15px;
+    text-align: left;
+  }
+  .product-card img {
+    max-width: 100%;
+    height: auto;
+  }
+  .product-title {
+    font-size: 14px;
+    margin: 10px 0;
+    color: #0066c0;
+  }
+  .product-rating {
+    color: #FF9900;
+    font-size: 12px;
+  }
+  .product-price {
+    font-weight: bold;
+    color: #B12704;
+    margin-top: 5px;
+  }
+  .btn {
+    background-color: #FFD814;
+    border: 1px solid #FCD200;
+    padding: 8px 12px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 13px;
+    margin-top: 10px;
+    width: 100%;
+  }
+  .btn:hover {
+    background-color: #F7CA00;
+  }
+  footer {
+    background-color: #131921;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+  <header>
+    <a href="/" class="logo">amazon</a>
+    <div class="search-bar">
+      <input type="text" class="search-input" placeholder="Buscar Amazon.com">
+    </div>
+    <div class="header-nav">
+      <a href="/gp/css/homepage.html" class="header-link">Hola, Identifícate<br><strong>Cuenta y Listas</strong></a>
+      <a href="/gp/css/order-history" class="header-link">Devoluciones<br><strong>y Pedidos</strong></a>
+      <a href="/gp/cart/view.html" class="header-link">Carrito</a>
+    </div>
+  </header>
+  
+  <nav>
+    <a href="/gp/site-directory">Todo</a>
+    <a href="/gp/bestsellers">Los más vendidos</a>
+    <a href="/gcx/Regalos-para-todos/">Ofertas del Día</a>
+    <a href="/gp/help/customer/display.html">Servicio al Cliente</a>
+    <a href="/gp/new-releases">Lanzamientos</a>
+    <a href="/gp/browse.html?node=16115931011">Prime</a>
+    <a href="/gp/browse.html?node=12090439011">Electrónicos</a>
+    <a href="/gp/browse.html?node=283155">Libros</a>
+  </nav>
+
+  <div class="container">
+    <div class="hero">
+      <div class="hero-content">
+        <h2>Bienvenido a Amazon</h2>
+        <p>Descubre millones de productos con envíos rápidos y seguros</p>
+      </div>
+    </div>
+    <h2>Productos destacados</h2>
+    <div class="product-grid" id="productGrid">
+      <!-- Products will be dynamically added here -->
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2024 Amazon.com, clone for educational purposes by dcoso.dev to study user-level pipelines.</p>
+  </footer>
+
+  <script>
+    const products = [
+      { id: 1, name: "Echo Dot (4ta Gen) - Altavoz inteligente con Alexa", price: 49.99, image: "https://m.media-amazon.com/images/I/61u48FEs0rL._AC_UL320_.jpg", rating: 4.5 },
+      { id: 2, name: "Fire TV Stick 4K con control remoto por voz Alexa", price: 39.99, image: "https://m.media-amazon.com/images/I/51CgKGfMelL._AC_UL320_.jpg", rating: 4.7 },
+      { id: 3, name: "Kindle Paperwhite (8 GB) - Ahora con pantalla de 6.8\" y luz cálida ajustable", price: 129.99, image: "https://m.media-amazon.com/images/I/61Ww4abGclL._AC_UL320_.jpg", rating: 4.6 },
+      { id: 4, name: "Ring Video Doorbell - Video en HD 1080p, detección de movimiento avanzada", price: 99.99, image: "https://m.media-amazon.com/images/I/51E2yTVJ5JL._AC_UL320_.jpg", rating: 4.4 },
+      { id: 5, name: "AmazonBasics Pilas alcalinas AA de alto rendimiento, paquete de 48", price: 12.49, image: "https://m.media-amazon.com/images/I/71IdKRlm8+L._AC_UL320_.jpg", rating: 4.5 },
+      { id: 6, name: "Fujifilm Instax Mini 11 - Cámara instantánea", price: 69.99, image: "https://m.media-amazon.com/images/I/71iVPEyEqdL._AC_UL320_.jpg", rating: 4.8 }
+    ];
+
+    const productGrid = document.getElementById('productGrid');
+
+    products.forEach(product => {
+      const productCard = document.createElement('div');
+      productCard.className = 'product-card';
+      productCard.innerHTML = `
+        <img src="${product.image}" alt="${product.name}" width="200" height="200">
+        <h3 class="product-title">${product.name}</h3>
+        <div class="product-rating">
+          ${'★'.repeat(Math.floor(product.rating))}${'☆'.repeat(5 - Math.floor(product.rating))}
+          <span style="color: #007185;">${product.rating.toFixed(1)}</span>
+        </div>
+        <p class="product-price">$${product.price.toFixed(2)}</p>
+        <button class="btn" onclick="addToCart(${product.id})">Agregar al Carrito</button>
+      `;
+      productGrid.appendChild(productCard);
+    });
+
+    function addToCart(productId) {
+      alert(`Producto ${productId} añadido al carrito`);
+      // Aquí se implementaría la lógica real para añadir al carrito
+    }
+  </script>
+</body>
+</html>

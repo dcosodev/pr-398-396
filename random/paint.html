@@ -1,0 +1,570 @@
+<!-- 
+
+This HTML file creates a web-based drawing application called "Paint AI". 
+It includes a canvas for drawing, a toolbar with various tools, color and shape panels, 
+and an input field for AI-generated drawings based on user descriptions.
+
+Key Features:
+- Drawing tools: pencil, eraser, ruler.
+- Color selection: predefined colors and a color picker.
+- Shape drawing: circle, square, triangle, star, heart, rectangle, ellipse, diamond, pentagon, hexagon, cloud.
+- AI input: allows users to describe shapes for the AI to draw.
+- Clear canvas button to reset the drawing area.
+
+Styles:
+- Flexbox layout for centering and aligning elements.
+- Responsive design with max-width constraints.
+- Hover effects and transitions for interactive elements.
+- Fixed position citation link.
+
+JavaScript:
+- Uses Paper.js library for drawing on the canvas.
+- Handles mouse events for drawing and shape creation.
+- Manages tool and color selection.
+- AI input processing to draw shapes based on user descriptions.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paint AI</title>
+<style>
+  body {
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 20px;
+  }
+  h1 {
+    color: #333;
+    margin-bottom: 20px;
+  }
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 950px;
+  }
+  .drawing-area {
+    display: flex;
+    width: 100%;
+  }
+  .canvas-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  #canvas {
+    border: 2px solid #333;
+    background-color: white;
+    cursor: crosshair;
+  }
+  #toolbar {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .tool {
+    margin: 5px;
+    padding: 10px;
+    font-size: 16px;
+    color: #333;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  .tool:nth-child(4n+1) { background-color: #c9f2c7; }
+  .tool:nth-child(4n+2) { background-color: #aceca1; }
+  .tool:nth-child(4n+3) { background-color: #96be8c; }
+  .tool:nth-child(4n+4) { background-color: #629460; }
+  .tool:hover {
+    opacity: 0.8;
+  }
+  #strokeWidth {
+    width: 100px;
+    margin: 5px;
+  }
+  #currentStroke {
+    margin: 5px;
+    padding: 5px;
+    border: 1px solid #333;
+    border-radius: 5px;
+  }
+  .active {
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    transform: scale(1.05);
+  }
+  #aiInputContainer {
+    width: 100%;
+    max-width: 400px;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+  #aiInput {
+    width: 100%;
+    padding: 10px 40px 10px 10px;
+    font-size: 16px;
+    border: 2px solid #333;
+    border-radius: 5px;
+  }
+  #aiSubmit {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+  }
+  #aiSubmit:hover {
+    opacity: 0.7;
+  }
+  .shapes-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 5px;
+    padding: 5px;
+    margin-left: 10px;
+  }
+  .shape-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    margin: 2px 0;
+    background-color: #e0e0e0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  .shape-button:hover {
+    background-color: #d0d0d0;
+  }
+  .shape-icon {
+    width: 30px;
+    height: 30px;
+  }
+  .color-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 5px;
+    padding: 5px;
+    margin-right: 10px;
+  }
+  .color-button {
+    width: 40px;
+    height: 40px;
+    margin: 2px 0;
+    border: 2px solid black;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.3s;
+    box-sizing: border-box;
+  }
+  .color-button:hover {
+    transform: scale(1.1);
+  }
+  .color-button.active {
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    transform: scale(1.1);
+  }
+  #colorPicker {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 2px solid black;
+    border-radius: 50%;
+    cursor: pointer;
+    overflow: hidden;
+  }
+  #colorPicker::-webkit-color-swatch-wrapper {
+    padding: 0;
+  }
+  #colorPicker::-webkit-color-swatch {
+    border: none;
+    border-radius: 50%;
+  }
+  #citation {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+      }
+</style>
+</head>
+<body>
+  <h1>Paint AI</h1>
+  <div class="container">
+    <div id="toolbar">
+      <button class="tool" id="pencil">Lápiz</button>
+      <button class="tool" id="eraser">Borrador</button>
+      <button class="tool" id="ruler">Regla</button>
+      <input type="color" id="colorPicker" value="#FF0000">
+      <input type="range" id="strokeWidth" min="1" max="50" value="2">
+      <span id="currentStroke">2px</span>
+      <button class="tool" id="clear">Limpiar</button>
+    </div>
+    <div class="drawing-area">
+      <div class="color-panel">
+        <button class="color-button" style="background-color: #000000; border-color: #808080;" data-color="#000000"></button>
+        <button class="color-button" style="background-color: #800080;" data-color="#800080"></button>
+        <button class="color-button" style="background-color: #0000FF;" data-color="#0000FF"></button>
+        <button class="color-button" style="background-color: #008000;" data-color="#008000"></button>
+        <button class="color-button" style="background-color: #8B4513;" data-color="#8B4513"></button>
+        <button class="color-button" style="background-color: #FF0000;" data-color="#FF0000"></button>
+        <button class="color-button" style="background-color: #FFA500;" data-color="#FFA500"></button>
+        <button class="color-button" style="background-color: #FFFF00;" data-color="#FFFF00"></button>
+        <button class="color-button" style="background-color: #00FFFF;" data-color="#00FFFF"></button>
+        <button class="color-button" style="background-color: #FF00FF;" data-color="#FF00FF"></button>
+        <button class="color-button" style="background-color: #808080;" data-color="#808080"></button>
+      </div>
+      <div class="canvas-container">
+        <canvas id="canvas" width="800" height="600"></canvas>
+      </div>
+      <div class="shapes-panel">
+        <button class="shape-button" data-shape="circle">
+          <svg class="shape-icon" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="40" fill="none" stroke="black" stroke-width="5"/>
+          </svg>
+        </button>
+        <button class="shape-button" data-shape="square">
+          <svg class="shape-icon" viewBox="0 0 100 100">
+            <rect x="10" y="10" width="80" height="80" fill="none" stroke="black" stroke-width="5"/>
+          </svg>
+        </button>
+        <button class="shape-button" data-shape="triangle">
+          <svg class="shape-icon" viewBox="0 0 100 100">
+            <polygon points="50,10 90,90 10,90" fill="none" stroke="black" stroke-width="5"/>
+          </svg>
+        </button>
+        <button class="shape-button" data-shape="star">
+          <svg class="shape-icon" viewBox="0 0 100 100">
+            <path d="M50,10 L61,40 93,40 68,60 79,90 50,75 21,90 32,60 7,40 39,40 Z" fill="none" stroke="black" stroke-width="5"/>
+          </svg>
+        </button>
+        <button class="shape-button" data-shape="heart">
+          <svg class="shape-icon" viewBox="0 0 100 100">
+            <path d="M50,30 A20,20,0,0,1,90,30 A20,20,0,0,1,50,70 A20,20,0,0,1,10,30 A20,20,0,0,1,50,30 Z" fill="none" stroke="black" stroke-width="5"/>
+          </svg>
+        </button>
+        <button class="shape-button" data-shape="rectangle">
+          <svg class="shape-icon" viewBox="0 0 100 100">
+            <rect x="10" y="25" width="80" height="50" fill="none" stroke="black" stroke-width="5"/>
+          </svg>
+        </button>
+        <button class="shape-button" data-shape="ellipse">
+          <svg class="shape-icon" viewBox="0 0 100 100">
+            <ellipse cx="50" cy="50" rx="40" ry="25" fill="none" stroke="black" stroke-width="5"/>
+          </svg>
+        </button>
+        <button class="shape-button" data-shape="diamond">
+          <svg class="shape-icon" viewBox="0 0 100 100">
+            <polygon points="50,10 90,50 50,90 10,50" fill="none" stroke="black" stroke-width="5"/>
+          </svg>
+        </button>
+        <button class="shape-button" data-shape="pentagon">
+          <svg class="shape-icon" viewBox="0 0 100 100">
+            <polygon points="50,10 90,40 75,90 25,90 10,40" fill="none" stroke="black" stroke-width="5"/>
+          </svg>
+        </button>
+        <button class="shape-button" data-shape="hexagon">
+          <svg class="shape-icon" viewBox="0 0 100 100">
+            <polygon points="50,10 90,30 90,70 50,90 10,70 10,30" fill="none" stroke="black" stroke-width="5"/>
+          </svg>
+        </button>
+        <button class="shape-button" data-shape="cloud">
+          <svg class="shape-icon" viewBox="0 0 100 100">
+            <path d="M25,60 A20,20,0,0,1,5,40 A20,20,0,0,1,25,20 A20,20,0,0,1,45,40 A20,20,0,0,0,65,20 A20,20,0,0,1,85,40 A20,20,0,0,1,65,60 Z" fill="none" stroke="black" stroke-width="5"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div id="aiInputContainer">
+      <input type="text" id="aiInput" placeholder="Describe lo que quieres que la IA dibuje...">
+      <button id="aiSubmit">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
+    </div>
+  </div>
+  <div id="citation">
+    <a href="https://www.dcoso.dev" style="color: white; text-decoration: none;">dcoso.dev</a>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.15/paper-full.min.js"></script>
+  <script>
+    window.onload = function() {
+      paper.install(window);
+      paper.setup('canvas');
+
+      var tool = new Tool();
+      var path;
+      var color = '#FF0000';
+      var strokeWidth = 2;
+      var isEraser = false;
+      var isRuler = false;
+      var startPoint;
+      var currentShape = null;
+      var previewShape = null;
+      var isDrawingShape = false;
+      var shapeStartPoint = null;
+
+      function setActiveTool(toolId) {
+        document.querySelectorAll('.tool').forEach(button => button.classList.remove('active'));
+        document.getElementById(toolId).classList.add('active');
+      }
+
+      function setActiveColor(colorButton) {
+        document.querySelectorAll('.color-button').forEach(button => button.classList.remove('active'));
+        colorButton.classList.add('active');
+        color = colorButton.dataset.color;
+        document.getElementById('colorPicker').value = color;
+      }
+
+      tool.onMouseMove = function(event) {
+        if (currentShape && !isDrawingShape) {
+          if (previewShape) previewShape.remove();
+          previewShape = createShape(currentShape, event.point, 50);
+          previewShape.strokeColor = color;
+          previewShape.strokeWidth = strokeWidth;
+          previewShape.opacity = 0.5;
+        }
+      }
+
+      tool.onMouseDown = function(event) {
+        if (isRuler) {
+          startPoint = event.point;
+        } else if (currentShape) {
+          isDrawingShape = true;
+          shapeStartPoint = event.point;
+          if (previewShape) previewShape.remove();
+          previewShape = createShape(currentShape, event.point, 50);
+          previewShape.strokeColor = color;
+          previewShape.strokeWidth = strokeWidth;
+        } else {
+          path = new Path();
+          path.strokeColor = isEraser ? 'white' : color;
+          path.strokeWidth = strokeWidth;
+          path.add(event.point);
+        }
+      }
+
+      tool.onMouseDrag = function(event) {
+        if (isRuler) {
+          project.activeLayer.children['ruleLine']?.remove();
+          var line = new Path.Line(startPoint, event.point);
+          line.strokeColor = color;
+          line.strokeWidth = strokeWidth;
+          line.name = 'ruleLine';
+        } else if (isDrawingShape && previewShape) {
+          var size = shapeStartPoint.getDistance(event.point) * 2;
+          previewShape.remove();
+          previewShape = createShape(currentShape, shapeStartPoint, size);
+          previewShape.strokeColor = color;
+          previewShape.strokeWidth = strokeWidth;
+        } else if (!currentShape) {
+          path.add(event.point);
+        }
+      }
+
+      tool.onMouseUp = function(event) {
+        if (isRuler) {
+          var finalLine = new Path.Line(startPoint, event.point);
+          finalLine.strokeColor = color;
+          finalLine.strokeWidth = strokeWidth;
+          project.activeLayer.children['ruleLine']?.remove();
+        } else if (isDrawingShape && previewShape) {
+          previewShape.opacity = 1;
+          isDrawingShape = false;
+          previewShape = null;
+        }
+      }
+
+      function createShape(shape, center, size) {
+        var newShape;
+
+        switch(shape) {
+          case 'circle':
+            newShape = new Path.Circle({
+              center: center,
+              radius: size / 2
+            });
+            break;
+          case 'square':
+            newShape = new Path.Rectangle({
+              center: center,
+              size: size
+            });
+            break;
+          case 'triangle':
+            newShape = new Path.RegularPolygon(center, 3, size / 2);
+            break;
+          case 'star':
+            newShape = new Path.Star(center, 5, size / 4, size / 2);
+            break;
+          case 'heart':
+            newShape = new Path();
+            newShape.moveTo(center.add(new Point(0, size / 4)));
+            newShape.cubicCurveTo(
+              center.add(new Point(-size / 2, -size / 4)),
+              center.add(new Point(-size / 4, -size / 2)),
+              center.add(new Point(0, -size / 4))
+            );
+            newShape.cubicCurveTo(
+              center.add(new Point(size / 4, -size / 2)),
+              center.add(new Point(size / 2, -size / 4)),
+              center.add(new Point(0, size / 4))
+            );
+            break;
+          case 'rectangle':
+            newShape = new Path.Rectangle({
+              center: center,
+              size: [size * 1.5, size]
+            });
+            break;
+          case 'ellipse':
+            newShape = new Path.Ellipse({
+              center: center,
+              radius: [size / 2, size / 3]
+            });
+            break;
+          case 'diamond':
+            newShape = new Path.RegularPolygon(center, 4, size / 2);
+            newShape.rotate(45);
+            break;
+          case 'pentagon':
+            newShape = new Path.RegularPolygon(center, 5, size / 2);
+            break;
+          case 'hexagon':
+            newShape = new Path.RegularPolygon(center, 6, size / 2);
+            break;
+          case 'cloud':
+            newShape = new Path();
+            newShape.moveTo(center.add(new Point(-size/4, size/8)));
+            newShape.arcTo(center.add(new Point(-size/2, -size/8)), center.add(new Point(-size/4, -size/4)));
+            newShape.arcTo(center.add(new Point(0, -size/2)), center.add(new Point(size/4, -size/4)));
+            newShape.arcTo(center.add(new Point(size/2, -size/8)), center.add(new Point(size/4, size/8)));
+            newShape.arcTo(center.add(new Point(0, size/4)), center.add(new Point(-size/4, size/8)));
+            newShape.closePath();
+            break;
+        }
+        return newShape;
+      }
+
+      document.getElementById('pencil').onclick = function() {
+        isEraser = false;
+        isRuler = false;
+        currentShape = null;
+        if (previewShape) previewShape.remove();
+        setActiveTool('pencil');
+      }
+
+      document.getElementById('eraser').onclick = function() {
+        isEraser = true;
+        isRuler = false;
+        currentShape = null;
+        if (previewShape) previewShape.remove();
+        setActiveTool('eraser');
+      }
+
+      document.getElementById('ruler').onclick = function() {
+        isRuler = true;
+        isEraser = false;
+        currentShape = null;
+        if (previewShape) previewShape.remove();
+        setActiveTool('ruler');
+      }
+
+      document.getElementById('strokeWidth').oninput = function() {
+        strokeWidth = parseInt(this.value);
+        document.getElementById('currentStroke').textContent = strokeWidth + 'px';
+      }
+
+      document.getElementById('clear').onclick = function() {
+        project.activeLayer.removeChildren();
+        view.draw();
+      }
+
+      document.querySelectorAll('.shape-button').forEach(button => {
+        button.addEventListener('click', function() {
+          currentShape = this.dataset.shape;
+          isEraser = false;
+          isRuler = false;
+          setActiveTool('pencil');
+        });
+      });
+
+      document.querySelectorAll('.color-button').forEach(button => {
+        button.addEventListener('click', function() {
+          setActiveColor(this);
+        });
+      });
+
+      document.getElementById('colorPicker').addEventListener('input', function() {
+        color = this.value;
+        document.querySelectorAll('.color-button').forEach(button => button.classList.remove('active'));
+      });
+
+      
+      setActiveColor(document.querySelector('.color-button'));
+
+      document.getElementById('aiSubmit').onclick = function() {
+        var aiPrompt = document.getElementById('aiInput').value.trim();
+        if (aiPrompt !== '') {
+          var keywords = ['círculo', 'cuadrado', 'triángulo', 'estrella', 'corazón', 'rectángulo', 'elipse', 'diamante', 'pentágono', 'hexágono', 'nube'];
+          var shape = keywords.find(keyword => aiPrompt.toLowerCase().includes(keyword));
+          if (shape) {
+            var newShape = createShape(
+              shape === 'círculo' ? 'circle' : 
+              shape === 'cuadrado' ? 'square' : 
+              shape === 'triángulo' ? 'triangle' : 
+              shape === 'estrella' ? 'star' : 
+              shape === 'corazón' ? 'heart' :
+              shape === 'rectángulo' ? 'rectangle' :
+              shape === 'elipse' ? 'ellipse' :
+              shape === 'diamante' ? 'diamond' :
+              shape === 'pentágono' ? 'pentagon' :
+              shape === 'hexágono' ? 'hexagon' :
+              'cloud', 
+              view.center,
+              Math.min(view.size.width, view.size.height) * 0.4
+            );
+            newShape.strokeColor = color;
+            newShape.strokeWidth = strokeWidth;
+            view.draw();
+          } else {
+            alert('Lo siento, no puedo dibujar eso de forma simple. Intenta con círculo, cuadrado, triángulo, estrella, corazón, rectángulo, elipse, diamante, pentágono, hexágono o nube.');
+          }
+        } else {
+          alert('Por favor, introduce una descripción para que la IA genere el dibujo.');
+        }
+      }
+    }
+  </script>
+</body></html>

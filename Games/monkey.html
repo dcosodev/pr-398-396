@@ -1,8 +1,42 @@
+<!--
+
+This HTML file represents a typing game called "GorilaType Arcade". The game allows users to test their typing skills by typing pre-defined or custom text as quickly and accurately as possible. The page includes the following sections:
+
+1. Header:
+    - Displays the game title and a brief description.
+    - Shows a scrolling list of player statistics.
+    - Contains a button to start the game.
+
+2. Main Content:
+    - Text Selection Section: Allows users to select a pre-defined paragraph or enter custom text for the typing challenge.
+    - Custom Text Section: Provides a textarea for users to input their own text.
+    - Game Area: Displays the text to be typed and an input area for typing. Shows real-time statistics such as Words Per Minute (WPM), accuracy, and time elapsed.
+
+3. Footer:
+    - Displays a citation with the developer's website.
+
+The file also includes embedded CSS for styling and JavaScript for game functionality, such as initializing the game, starting the game, updating statistics, and handling user input.
+
+Key Features:
+- Responsive design with media queries for different screen sizes.
+- Real-time performance measurement (WPM, accuracy, time).
+- Customizable text input for personalized challenges.
+- Visual feedback for correct and incorrect typing.
+
+Dependencies:
+- Font Awesome for icons.
+- Google Fonts for custom font styling.
+- External CSS for additional styling.
+
+-->
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TypeMaster Arcade</title>
+<title>Monkeytype clone</title>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
@@ -275,11 +309,22 @@
             font-size: 0.7rem;
         }
     }
+    #citation {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+      }
 </style>
 </head>
 <body>
     <header>
-        <h1>GorilaType</h1>
+        <h1>GorilaType Arcade</h1>
         <p>Test your typing skills in the ultimate arcade challenge!</p>
         <div id="arcade-stats">
             <div class="stat-row">
@@ -356,6 +401,9 @@
             </div>
         </div>
     </main>
+    <div id="citation">
+        <a href="https://www.dcoso.dev" style="color: white; text-decoration: none;">dcoso.dev</a>
+      </div>
 
     <script>
         const paragraphs = [

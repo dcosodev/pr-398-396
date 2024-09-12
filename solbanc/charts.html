@@ -1,0 +1,350 @@
+<!--
+
+DESCRIPTION:
+This HTML file represents an advanced trading dashboard for XAU/USD (Gold). It includes a variety of sections such as detailed analyses, economic data, flow analysis, seasonality, technical analysis, fundamental analysis, market sentiment, and high probability trades. The dashboard is styled with CSS and utilizes JavaScript libraries like jQuery, TradingView, and Plotly for dynamic chart rendering.
+
+SECTIONS:
+1. Head:
+  - Meta tags for character set and viewport settings.
+  - Title of the document.
+  - Inline CSS for styling the dashboard.
+  - External scripts for jQuery, TradingView, and Plotly.
+
+2. Body:
+  - Main dashboard layout with three columns: left-column, main-chart, and right-column.
+  - Left-column: Contains detailed analyses including correlations, economic data, flow analysis, and seasonality.
+  - Main-chart: Displays the main TradingView chart for XAU/USD.
+  - Right-column: Provides current price, technical analysis, fundamental analysis, market sentiment, and high probability trades.
+
+3. JavaScript:
+  - Initializes the TradingView widget for the main chart.
+  - Renders correlation, flow, and seasonality charts using Plotly.
+
+STYLES:
+- General styles for body, columns, headers, and various elements within the dashboard.
+- Specific styles for indicators (buy, sell, neutral), current price, probability, and mini-charts.
+
+SCRIPTS:
+- jQuery for DOM manipulation.
+- TradingView widget for the main chart.
+- Plotly for rendering correlation, flow, and seasonality charts.
+
+USAGE:
+- Open the HTML file in a web browser to view the advanced trading dashboard.
+- Ensure internet connectivity for loading external scripts and libraries.
+-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Advanced Trading Dashboard - XAU/USD (Gold)</title>
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: #0f172a;
+        color: #e2e8f0;
+        margin: 0;
+        padding: 20px;
+      }
+      .dashboard {
+        display: flex;
+        height: calc(100vh - 40px);
+      }
+      .left-column,
+      .right-column {
+        width: 300px;
+        background-color: #1e293b;
+        border-radius: 10px;
+        padding: 15px;
+        overflow-y: auto;
+      }
+      .main-chart {
+        flex-grow: 1;
+        margin: 0 20px;
+      }
+      h1,
+      h2,
+      h3,
+      h4 {
+        color: #60a5fa;
+      }
+      .chart-container {
+        width: 100%;
+        height: calc(100% - 50px);
+      }
+      .analysis-item {
+        background-color: #2d3748;
+        border-radius: 5px;
+        padding: 10px;
+        margin-bottom: 15px;
+      }
+      .indicator {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 15px;
+        font-size: 0.9em;
+        font-weight: 600;
+        margin-right: 5px;
+      }
+      .buy {
+        background-color: #10b981;
+        color: white;
+      }
+      .sell {
+        background-color: #ef4444;
+        color: white;
+      }
+      .neutral {
+        background-color: #f59e0b;
+        color: white;
+      }
+      .current-price {
+        font-size: 1.2em;
+        font-weight: bold;
+        color: #fbbf24;
+        margin-bottom: 15px;
+      }
+      .probability {
+        font-weight: bold;
+        color: #10b981;
+      }
+      .mini-chart {
+        width: 100%;
+        height: 150px;
+        margin-bottom: 15px;
+      }
+      #citation {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+      }
+
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script
+      type="text/javascript"
+      src="https://s3.tradingview.com/tv.js"
+    ></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  </head>
+  <body>
+    <div class="dashboard">
+      <div class="left-column">
+        <h3>Detailed Analyses</h3>
+        <div class="analysis-item">
+          <h4>Correlations</h4>
+          <div id="correlationChart" class="mini-chart"></div>
+          <p>
+            XAU/USD vs USD Index: -0.85<br />
+            XAU/USD vs S&P 500: 0.32<br />
+            XAU/USD vs US 10Y Yield: -0.58
+          </p>
+        </div>
+        <div class="analysis-item">
+          <h4>Economic Data</h4>
+          <p>
+            US GDP (latest): 2.1%<br />
+            US Unemployment Rate: 3.8%<br />
+            US CPI (annual): 3.2%<br />
+            FED Funds Rate: 5.25-5.50%
+          </p>
+        </div>
+        <div class="analysis-item">
+          <h4>Flow Analysis</h4>
+          <div id="flowChart" class="mini-chart"></div>
+          <p>
+            Institutional flows: +$1.2B (7d)<br />
+            Gold ETF flows: +$850M (7d)<br />
+            COMEX stocks change: -2.5% (30d)
+          </p>
+        </div>
+        <div class="analysis-item">
+          <h4>Seasonality</h4>
+          <div id="seasonalityChart" class="mini-chart"></div>
+          <p>
+            Average April performance: +1.8%<br />
+            Best month: August (+2.7%)<br />
+            Worst month: November (-1.2%)
+          </p>
+        </div>
+      </div>
+
+      <div class="main-chart">
+        <h2>XAU/USD (Gold)</h2>
+        <div id="tradingview_chart" class="chart-container"></div>
+      </div>
+
+      <div class="right-column">
+        <h3>XAU/USD Analysis</h3>
+        <div id="currentPrice" class="current-price">
+          Current price: 2358.08
+        </div>
+        <div id="technicalAnalysis" class="analysis-item">
+          <h4>Technical Analysis</h4>
+          <p>
+            <span class="indicator buy">BUY</span>
+            <br />RSI: 68.5 (Near overbought) <br />MACD: 15.20 (Strong bullish
+            signal) <br />EMA(200): 2150.00 (Price well above) <br />Trend:
+            Strongly bullish <br />Major support: 2330.00 <br />Key resistance:
+            2375.00 <br /><span class="probability">Probability: 89%</span>
+          </p>
+        </div>
+        <div id="fundamentalAnalysis" class="analysis-item">
+          <h4>Fundamental Analysis</h4>
+          <p>
+            USD strength: Weak (↓)
+            <br />Global inflation: 3.2% (↑) <br />Geopolitical risk: Very high
+            <br />Central bank policies: Accommodative <br />Real rates:
+            Strongly negative <br />Physical demand: Sharply increasing
+            <br /><span class="probability">Bullish impact: 92%</span>
+          </p>
+        </div>
+        <div id="marketSentiment" class="analysis-item">
+          <h4>Market Sentiment</h4>
+          <p>
+            Overall sentiment: Very Bullish
+            <br />Volume: 245,600 contracts (↑45% vs average) <br />Volatility:
+            2.8% (High) <br />Gold ETF flows: Strongly positive
+            <br />Institutional positions: 78% Long <br /><span
+              class="probability"
+              >Reliability: 94%</span
+            >
+          </p>
+        </div>
+        <div id="highProbabilityTrades" class="analysis-item">
+          <h4>High Probability Entry</h4>
+          <p>
+            Direction: LONG
+            <br />Entry price: <span class="entry-point">2360.50</span>
+            <br />Stop Loss: <span class="stop-loss">2345.00</span> <br />Take
+            Profit 1: <span class="take-profit">2385.00</span> <br />Take Profit
+            2: <span class="take-profit">2400.00</span> <br />Risk/Reward Ratio:
+            1:2.5 <br /><span class="probability"
+              >Success probability: 86%</span
+            >
+          </p>
+        </div>
+      </div>
+    </div>
+    <div id="citation">
+      <a href="https://www.dcoso.dev" style="color: white; text-decoration: none;">dcoso.dev</a>
+    </div>
+
+    <script>
+      $(document).ready(function () {
+        let widget = new TradingView.widget({
+          width: "100%",
+          height: "100%",
+          symbol: "XAUUSD",
+          interval: "D",
+          timezone: "Etc/UTC",
+          theme: "dark",
+          style: "1",
+          locale: "en",
+          toolbar_bg: "#f1f3f6",
+          enable_publishing: false,
+          allow_symbol_change: false,
+          container_id: "tradingview_chart",
+          hide_side_toolbar: false,
+          studies: [
+            "MASimple@tv-basicstudies",
+            "RSI@tv-basicstudies",
+            "MACD@tv-basicstudies",
+            "BB@tv-basicstudies",
+            "PivotPointsHighLow@tv-basicstudies",
+            "ZigZag@tv-basicstudies"
+          ]
+        });
+
+        // Correlation chart
+        var correlationData = [
+          {
+            x: ["USD Index", "S&P 500", "US 10Y Yield"],
+            y: [-0.85, 0.32, -0.58],
+            type: "bar",
+            marker: { color: ["#ef4444", "#10b981", "#ef4444"] }
+          }
+        ];
+
+        var correlationLayout = {
+          title: "XAU/USD Correlations",
+          paper_bgcolor: "rgba(0,0,0,0)",
+          plot_bgcolor: "rgba(0,0,0,0)",
+          font: { color: "#e2e8f0" },
+          margin: { t: 30, b: 20, l: 30, r: 30 }
+        };
+
+        Plotly.newPlot("correlationChart", correlationData, correlationLayout, {
+          displayModeBar: false
+        });
+
+        // Flow chart
+        var flowData = [
+          {
+            x: ["Institutional", "Gold ETF", "COMEX Stocks"],
+            y: [1.2, 0.85, -2.5],
+            type: "bar",
+            marker: { color: ["#10b981", "#10b981", "#ef4444"] }
+          }
+        ];
+
+        var flowLayout = {
+          title: "Flow Analysis (7d)",
+          paper_bgcolor: "rgba(0,0,0,0)",
+          plot_bgcolor: "rgba(0,0,0,0)",
+          font: { color: "#e2e8f0" },
+          margin: { t: 30, b: 20, l: 30, r: 30 }
+        };
+
+        Plotly.newPlot("flowChart", flowData, flowLayout, {
+          displayModeBar: false
+        });
+
+        // Seasonality chart
+        var seasonalityData = [
+          {
+            x: [
+              "Jan",
+              "Feb",
+              "Mar",
+              "Apr",
+              "May",
+              "Jun",
+              "Jul",
+              "Aug",
+              "Sep",
+              "Oct",
+              "Nov",
+              "Dec"
+            ],
+            y: [0.8, -0.5, 1.2, 1.8, 0.3, -0.2, 1.5, 2.7, 0.9, -0.8, -1.2, 1.6],
+            type: "scatter",
+            mode: "lines+markers",
+            line: { color: "#60a5fa" }
+          }
+        ];
+
+        var seasonalityLayout = {
+          title: "XAU/USD Seasonality",
+          paper_bgcolor: "rgba(0,0,0,0)",
+          plot_bgcolor: "rgba(0,0,0,0)",
+          font: { color: "#e2e8f0" },
+          margin: { t: 30, b: 20, l: 30, r: 30 }
+        };
+
+        Plotly.newPlot("seasonalityChart", seasonalityData, seasonalityLayout, {
+          displayModeBar: false
+        });
+      });
+    </script>
+  </body>
+</html>

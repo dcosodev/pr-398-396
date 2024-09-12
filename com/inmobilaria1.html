@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Central Inmobiliaria - Servicios Inmobiliarios y Recaudo de Cartera</title>
+</head>
+<style>
+  :root {
+    --primary-color: #2c3e50;
+    --secondary-color: #e74c3c;
+    --accent-color: #ecf0f1;
+    --text-color: #34495e;
+  }
+
+  body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', Arial, sans-serif;
+    color: var(--text-color);
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 15px 0;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+  }
+
+  header.scrolled {
+    padding: 10px 0;
+    background-color: rgba(44, 62, 80, 0.9);
+  }
+
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    font-size: 1.5em;
+    font-weight: bold;
+    transition: transform 0.3s ease;
+  }
+
+  .logo:hover {
+    transform: scale(1.05);
+  }
+
+  .manager-info {
+    color: white;
+    font-size: 0.9em;
+    margin-left: 20px;
+  }
+
+  .nav-links {
+    list-style: none;
+    display: flex;
+  }
+
+  .nav-links li {
+    margin-left: 20px;
+  }
+
+  .nav-links a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    position: relative;
+  }
+
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -5px;
+    left: 0;
+    background-color: var(--secondary-color);
+    transition: width 0.3s ease;
+  }
+
+  .nav-links a:hover::after {
+    width: 100%;
+  }
+
+  .hero {
+    background: linear-gradient(rgba(44, 62, 80, 0.7), rgba(44, 62, 80, 0.7)), url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+  }
+
+  .hero-content {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 1s ease forwards;
+  }
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .hero-content h1 {
+    font-size: 3.5em;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+  }
+
+  .hero-content h2 {
+    font-size: 1.8em;
+    margin-top: 20px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  }
+
+  .hero-content p {
+    font-size: 1.2em;
+    margin-bottom: 30px;
+  }
+
+  .services, .legal-services, .image-gallery, .motivation {
+    padding: 100px 0;
+    background-color: var(--accent-color);
+  }
+
+  .services h2, .legal-services h2, .image-gallery h2, .motivation h2 {
+    text-align: center;
+    margin-bottom: 60px;
+    color: var(--primary-color);
+    font-size: 2.5em;
+    position: relative;
+  }
+
+  .services h2::after, .legal-services h2::after, .image-gallery h2::after, .motivation h2::after {
+    content: '';
+    display: block;
+    width: 50px;
+    height: 3px;
+    background-color: var(--secondary-color);
+    margin: 20px auto 0;
+  }
+
+  .service-grid, .reasons-grid, .image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 40px;
+  }
+
+  .service-item, .reason-item, .testimonial-item {
+    background-color: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    text-align: center;
+  }
+
+  .service-item:hover, .reason-item:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+  }
+
+  .service-item h3, .reason-item h3, .testimonial-item h4 {
+    color: var(--primary-color);
+    margin-top: 0;
+    font-size: 1.4em;
+  }
+
+  .service-icon, .reason-item i, .testimonial-item p {
+    font-size: 3em;
+    color: var(--secondary-color);
+    margin-bottom: 20px;
+  }
+
+  .testimonial-item p {
+    font-style: italic;
+    margin-bottom: 20px;
+  }
+
+  .team {
+    padding: 100px 0;
+    background-color: white;
+  }
+
+  .manager {
+    padding: 100px 0;
+    background-color: white;
+  }
+
+  .manager h2 {
+    text-align: center;
+    margin-bottom: 40px;
+    color: var(--primary-color);
+    font-size: 2.5em;
+  }
+
+  .manager-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .manager-info {
+    text-align: center;
+    max-width: 600px;
+  }
+
+  .manager-info h3 {
+    color: var(--secondary-color);
+    font-size: 1.8em;
+    margin-bottom: 20px;
+  }
+
+  .manager-info p {
+    font-size: 1.1em;
+    line-height: 1.6;
+  }
+
+  .contact {
+    padding: 100px 0;
+    background-color: var(--accent-color);
+  }
+
+  .contact h2 {
+    text-align: center;
+    margin-bottom: 40px;
+    color: var(--primary-color);
+  }
+
+  .contact-info {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+  }
+
+  .contact-item {
+    flex: 1;
+    min-width: 200px;
+    margin: 20px;
+    text-align: center;
+  }
+
+  .contact-icon {
+    font-size: 2em;
+    color: var(--secondary-color);
+    margin-bottom: 10px;
+  }
+
+  #map {
+    height: 400px;
+    width: 100%;
+    margin-top: 40px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  }
+
+  footer {
+    background-color: var(--primary-color);
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+  }
+
+  .image-grid img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+  }
+
+  .image-grid img:hover {
+    transform: scale(1.05);
+  }
+
+  .motivation {
+    padding: 100px 0;
+    background-color: var(--accent-color);
+  }
+
+  .motivation h2 {
+    text-align: center;
+    margin-bottom: 40px;
+    color: var(--primary-color);
+    font-size: 2.5em;
+  }
+
+  .motivation-content {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .quote {
+    font-size: 1.5em;
+    color: var(--secondary-color);
+    margin-bottom: 30px;
+  }
+
+  .quote i {
+    font-size: 1.5em;
+    margin: 0 10px;
+  }
+
+  blockquote {
+    font-style: italic;
+    margin: 20px 0;
+  }
+
+  .motivation-message {
+    font-size: 1.1em;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 768px) {
+    .nav-links {
+      display: none;
+    }
+
+    .hero-content h1 {
+      font-size: 2.5em;
+    }
+
+    .service-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  #citation {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+      }
+
+
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY"></script>
+</head>
+<body>
+  <header>
+    <nav class="container">
+      <div class="logo">CENTRAL INMOBILIARIA</div>
+      <div class="manager-info">Carlos Mendoza - Gerente</div>
+      <ul class="nav-links">
+        <li><a href="#inicio">Inicio</a></li>
+        <li><a href="#servicios">Servicios</a></li>
+        <li><a href="#servicios-legales">Servicios Legales</a></li>
+        <li><a href="#motivacion">Motivación</a></li>
+        <li><a href="#por-que-elegirnos">¿Por qué elegirnos?</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section id="inicio" class="hero">
+      <div class="hero-content">
+        <h1>Soluciones Inmobiliarias y Recaudo de Cartera</h1>
+        <p>Transformamos sus sueños de propiedad en realidad y gestionamos su cartera con eficacia</p>
+        <h2>Carlos Mendoza - Gerente</h2>
+      </div>
+    </section>
+
+    <section id="servicios" class="services">
+      <div class="container">
+        <h2>Nuestros Servicios</h2>
+        <div class="service-grid">
+          <div class="service-item">
+            <div class="service-icon"><i class="fas fa-building"></i></div>
+            <h3>Administración de Inmuebles</h3>
+            <p>Gestionamos su propiedad con eficiencia y cuidado, incluyendo aspectos legales y contractuales.</p>
+          </div>
+          <div class="service-item">
+            <div class="service-icon"><i class="fas fa-handshake"></i></div>
+            <h3>Ventas y Compras</h3>
+            <p>Asesoramiento experto en transacciones inmobiliarias, incluyendo due diligence legal.</p>
+          </div>
+          <div class="service-item">
+            <div class="service-icon"><i class="fas fa-chart-line"></i></div>
+            <h3>Avalúos</h3>
+            <p>Valoraciones precisas y profesionales, cumpliendo con todos los requisitos legales.</p>
+          </div>
+          <div class="service-item">
+            <div class="service-icon"><i class="fas fa-money-check-alt"></i></div>
+            <h3>Recaudo de Cartera</h3>
+            <p>Gestión eficiente y profesional de cobros y recuperación de cartera, siguiendo procesos legales adecuados.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="servicios-legales" class="legal-services">
+      <div class="container">
+        <h2>Servicios Legales</h2>
+        <div class="service-grid">
+          <div class="service-item">
+            <div class="service-icon"><i class="fas fa-gavel"></i></div>
+            <h3>Asesoría Legal Inmobiliaria</h3>
+            <p>Ofrecemos asesoramiento experto en todos los aspectos legales relacionados con bienes raíces.</p>
+          </div>
+          <div class="service-item">
+            <div class="service-icon"><i class="fas fa-file-contract"></i></div>
+            <h3>Contratos Inmobiliarios</h3>
+            <p>Redacción y revisión de contratos de compraventa, arrendamiento y otros acuerdos inmobiliarios.</p>
+          </div>
+          <div class="service-item">
+            <div class="service-icon"><i class="fas fa-balance-scale"></i></div>
+            <h3>Litigios Inmobiliarios</h3>
+            <p>Representación legal en disputas de propiedad, desalojos y otros conflictos relacionados con bienes raíces.</p>
+          </div>
+          <div class="service-item">
+            <div class="service-icon"><i class="fas fa-stamp"></i></div>
+            <h3>Trámites Legales</h3>
+            <p>Gestión de trámites legales como escrituras, hipotecas y registros de propiedad.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="motivacion" class="motivation">
+      <div class="container">
+        <h2>Inspiración para el Éxito</h2>
+        <div class="motivation-content">
+          <div class="quote">
+            <i class="fas fa-quote-left"></i>
+            <blockquote>
+              "El éxito en los negocios inmobiliarios y el recaudo de cartera requiere visión, perseverancia y un enfoque centrado en el cliente."
+            </blockquote>
+            <i class="fas fa-quote-right"></i>
+          </div>
+          <p class="motivation-message">
+            En Jovial Inmobiliaria, creemos en el poder de la determinación y la excelencia en el servicio. Cada día es una oportunidad para crear valor, superar expectativas y construir relaciones duraderas con nuestros clientes. Juntos, transformamos desafíos en oportunidades y sueños en realidad.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="por-que-elegirnos" class="why-choose-us">
+      <div class="container">
+        <h2>¿Por qué elegirnos?</h2>
+        <div class="reasons-grid">
+          <div class="reason-item">
+            <i class="fas fa-check-circle"></i>
+            <h3>Experiencia</h3>
+            <p>Más de 10 años en el mercado inmobiliario y gestión de cartera.</p>
+          </div>
+          <div class="reason-item">
+            <i class="fas fa-users"></i>
+            <h3>Equipo Profesional</h3>
+            <p>Personal altamente calificado y comprometido con su éxito.</p>
+          </div>
+          <div class="reason-item">
+            <i class="fas fa-chart-line"></i>
+            <h3>Resultados Comprobados</h3>
+            <p>Historial de éxito en ventas y recuperación de cartera.</p>
+          </div>
+        </div>
+      </div>
+    </section>    
+
+    <section id="gerente" class="manager">
+      <div class="container">
+        <h2>Nuestra Gerente</h2>
+        <div class="manager-content">
+          <div class="manager-info">
+            <h3>Carlos Mendoza</h3>
+            <p>Con amplia experiencia en el sector inmobiliario y especialista en recaudo de cartera, Alejandra lidera nuestro equipo con visión y compromiso.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contacto" class="contact">
+      <div class="container">
+        <h2>Contáctenos</h2>
+        <div class="contact-info">
+          <div class="contact-item">
+            <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+            <p>Calle 10 No 20-30, Edificio Central Oficina 305, Medellín</p>
+            <p>3101234567</p>
+            <p>contacto@inmobiliariacentral.com</p>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon"><i class="fas fa-phone"></i></div>
+            <p>3217664673</p>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+            <p>info@inmobiliariacentral.com</p>
+          </div>
+        </div>
+        <div id="map"></div>
+      </div>
+    </section>
+
+    <section class="image-gallery">
+      <div class="container">
+        <h2>Nuestro Trabajo</h2>
+        <div class="image-grid">
+          <img src="https://images.unsplash.com/photo-1556912167-f556f1f39faa" alt="Firma de contrato inmobiliario" width="300" height="200">
+          <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85" alt="Reunión de asesoría legal" width="300" height="200">
+          <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa" alt="Edificio de oficinas moderno" width="300" height="200">
+          <img src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca" alt="Martillo de juez y documentos legales" width="300" height="200">
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2024 CENTRAL Inmobiliaria y Recaudo de Cartera. www.dcoso.dev</p>
+    </div>
+  </footer>
+
+  <div id="citation">
+    <a href="https://www.dcoso.dev" style="color: white; text-decoration: none;">dcoso.dev</a>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.1/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.1/ScrollTrigger.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Animación de scroll para el encabezado
+      window.addEventListener('scroll', function() {
+        const header = document.querySelector('header');
+        if (window.scrollY > 100) {
+          header.classList.add('scrolled');
+        } else {
+          header.classList.remove('scrolled');
+        }
+      });
+
+      // Animaciones con GSAP
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Animación de los elementos de servicio
+      gsap.utils.toArray('.service-item').forEach(item => {
+        gsap.from(item, {
+          scrollTrigger: {
+            trigger: item,
+            start: "top 80%",
+          },
+          y: 50,
+          opacity: 0,
+          duration: 1,
+          ease: "power3.out"
+        });
+      });
+
+      // Animación del título de servicios
+      gsap.from('.services h2', {
+        scrollTrigger: {
+          trigger: '.services h2',
+          start: "top 80%",
+        },
+        y: -50,
+        opacity: 0,
+        duration: 1,
+        ease: "power3.out"
+      });
+
+      // Animación de "Inspiración para el Éxito"
+      gsap.from('.motivation-content', {
+        scrollTrigger: {
+          trigger: '.motivation',
+          start: "top 80%",
+        },
+        y: 50,
+        opacity: 0,
+        duration: 1,
+        ease: "power3.out"
+      });
+
+      // Animación de "¿Por qué elegirnos?"
+      gsap.from('.reason-item', {
+        scrollTrigger: {
+          trigger: '.why-choose-us',
+          start: "top 80%",
+        },
+        y: 50,
+        opacity: 0,
+        duration: 1,
+        stagger: 0.3,
+        ease: "power3.out"
+      });
+
+      // Animación de la sección del gerente
+      gsap.from('.manager-content', {
+        scrollTrigger: {
+          trigger: '.manager',
+          start: "top 80%",
+        },
+        y: 50,
+        opacity: 0,
+        duration: 1,
+        ease: "power3.out"
+      });
+
+      // Animación de los elementos de contacto
+      gsap.from('.contact-item', {
+        scrollTrigger: {
+          trigger: '.contact',
+          start: "top 80%",
+        },
+        y: 30,
+        opacity: 0,
+        duration: 1,
+        stagger: 0.2,
+        ease: "power3.out"
+      });
+
+      // Inicializar Google Maps
+      function initMap() {
+        const officeLocation = { lat: 43.8087174, lng: 43.6901968 }; // Coordenadas 
+        const map = new google.maps.Map(document.getElementById("map"), {
+          zoom: 15,
+          center: officeLocation,
+        });
+        const marker = new google.maps.Marker({
+          position: officeLocation,
+          map: map,
+          title: "Central Inmobiliaria",
+        });
+      }
+
+      // Cargar el mapa
+      initMap();
+    });
+  </script>
+</body>
+</html>
