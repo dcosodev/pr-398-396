@@ -1,0 +1,514 @@
+<!-- 
+
+This HTML file creates a retro-themed Snake game with a modern twist. The game includes:
+- A header with a neon-styled title and a "Insert Coin" button.
+- A navigation bar with links to different sections: Play, How To, and About.
+- A main section containing the game canvas, score display, control buttons, and instructions.
+- A footer with a citation.
+
+The CSS styles define the visual appearance, including:
+- Custom fonts and colors.
+- Responsive design for different screen sizes.
+- Animations for neon text effects and button interactions.
+
+The JavaScript code handles the game logic, including:
+- Initializing the game canvas and context.
+- Defining the snake and food objects.
+- Functions to draw the game, move the snake, generate food, check collisions, and update the score.
+- Event listeners for starting the game, controlling the snake, and handling keyboard inputs.
+- Smooth scrolling for navigation links and CTA button functionality.
+
+The game starts when the "Start Game" button is clicked, and the player controls the snake using arrow keys or on-screen buttons to eat food and grow longer while avoiding collisions.
+-->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arcade Snake</title>
+</head>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+:root {
+    --primary-color: #00ff00;
+    --secondary-color: #ff00ff;
+    --background-color: #000000;
+    --surface-color: #1a1a1a;
+    --text-color: #ffffff;
+    --text-secondary: #ffff00;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: 'Press Start 2P', cursive;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-image: 
+        radial-gradient(#ffffff33 2px, transparent 2px),
+        radial-gradient(#ffffff33 2px, transparent 2px);
+    background-size: 50px 50px;
+    background-position: 0 0, 25px 25px;
+}
+
+header {
+    background-color: var(--surface-color);
+    padding: 1rem;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-bottom: 4px solid var(--primary-color);
+}
+
+h1 {
+    margin: 0;
+    font-size: 2rem;
+    color: var(--primary-color);
+    text-shadow: 3px 3px var(--secondary-color);
+    animation: neon 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes neon {
+    from {
+        text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px var(--primary-color), 0 0 35px var(--primary-color), 0 0 40px var(--primary-color), 0 0 50px var(--primary-color), 0 0 75px var(--primary-color);
+    }
+    to {
+        text-shadow: 0 0 2.5px #fff, 0 0 5px #fff, 0 0 7.5px #fff, 0 0 10px var(--primary-color), 0 0 17.5px var(--primary-color), 0 0 20px var(--primary-color), 0 0 25px var(--primary-color), 0 0 37.5px var(--primary-color);
+    }
+}
+
+.cta-button {
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    border: none;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    font-family: 'Press Start 2P', cursive;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+    text-transform: uppercase;
+    box-shadow: 3px 3px 0px var(--primary-color);
+}
+
+.cta-button:hover {
+    background-color: var(--primary-color);
+    color: var(--background-color);
+    box-shadow: 3px 3px 0px var(--secondary-color);
+}
+
+nav {
+    background-color: var(--surface-color);
+    padding: 0.5rem;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+}
+
+nav ul li {
+    margin: 0 1rem;
+}
+
+nav ul li a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+    text-transform: uppercase;
+}
+
+nav ul li a:hover {
+    color: var(--primary-color);
+}
+
+main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+}
+
+#gameContainer {
+    background-color: var(--surface-color);
+    border: 4px solid var(--primary-color);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-color), 0 0 30px var(--primary-color);
+}
+
+#gameCanvas {
+    border: 2px solid var(--secondary-color);
+    background-color: var(--background-color);
+}
+
+#score {
+    font-size: 1.5rem;
+    margin-top: 1rem;
+    color: var(--text-secondary);
+}
+
+#controls {
+    margin-top: 1rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+}
+
+.control-btn {
+    background-color: var(--surface-color);
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 0.5rem;
+    text-align: center;
+    font-size: 1rem;
+    font-family: 'Press Start 2P', cursive;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+}
+
+.control-btn:hover {
+    background-color: var(--primary-color);
+    color: var(--background-color);
+}
+
+#startBtn {
+    grid-column: span 3;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+}
+
+#startBtn:hover {
+    background-color: var(--primary-color);
+}
+
+.instructions {
+    max-width: 600px;
+    margin: 2rem auto;
+    background-color: var(--surface-color);
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 0 10px var(--secondary-color);
+    border: 2px solid var(--secondary-color);
+}
+
+.instructions h2 {
+    color: var(--text-secondary);
+    margin-top: 0;
+    text-transform: uppercase;
+}
+
+.instructions p {
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    cursor: help;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 200px;
+    background-color: var(--surface-color);
+    color: var(--text-color);
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -100px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    border: 2px solid var(--primary-color);
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+@media (max-width: 768px) {
+    header {
+        padding: 0.5rem;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    nav ul {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    nav ul li {
+        margin: 0.5rem 0;
+    }
+
+    #gameContainer {
+        padding: 10px;
+    }
+
+    #gameCanvas {
+        width: 100%;
+        height: auto;
+    }
+
+    .instructions {
+        padding: 1rem;
+    }
+}
+#citation {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+      }
+
+
+</style>
+</head>
+<body>
+<header>
+    <h1>Snake</h1>
+    <button class="cta-button">Insert Coin</button>
+</header>
+
+<nav>
+    <ul>
+        <li><a href="#game">Play</a></li>
+        <li><a href="#instructions">How To</a></li>
+        <li><a href="#about">About</a></li>
+    </ul>
+</nav>
+
+<main>
+    <div id="gameContainer">
+        <canvas id="gameCanvas" width="300" height="300"></canvas>
+        <div id="score">Score: 0</div>
+        <div id="controls">
+            <button id="startBtn" class="control-btn">Start Game</button>
+            <button id="upBtn" class="control-btn">↑</button>
+            <button id="leftBtn" class="control-btn">←</button>
+            <button id="downBtn" class="control-btn">↓</button>
+            <button id="rightBtn" class="control-btn">→</button>
+        </div>
+    </div>
+
+    <div class="instructions" id="instructions">
+        <h2>How to Play</h2>
+        <p>Control the snake using the arrow buttons or keyboard arrows. Eat the pixels to grow longer and increase your score. Don't hit the walls or your own tail!</p>
+        <div class="tooltip">Need help?
+            <span class="tooltiptext">Press Start Game to begin. Use arrow keys or on-screen buttons to change direction.</span>
+        </div>
+    </div>
+
+    <div class="instructions" id="about">
+        <h2>About Snake</h2>
+        <p>Relive the golden age of arcade gaming with this reimagined version of the classic Snake game. Experience the nostalgia with retro graphics and challenging gameplay!</p>
+    </div>
+</main>
+
+<div id="citation">dcoso.dev</a></div> 
+
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const scoreElement = document.getElementById('score');
+    const startBtn = document.getElementById('startBtn');
+    const upBtn = document.getElementById('upBtn');
+    const leftBtn = document.getElementById('leftBtn');
+    const downBtn = document.getElementById('downBtn');
+    const rightBtn = document.getElementById('rightBtn');
+
+    const GRID_SIZE = 10;
+    const CANVAS_SIZE = canvas.width;
+    const TILE_COUNT = CANVAS_SIZE / GRID_SIZE;
+
+    let snake, food, direction, score, gameLoop, frameCount, speed;
+
+    function initGame() {
+        snake = [{x: 10, y: 10}];
+        food = generateRandomFoodPosition();
+        direction = {x: 0, y: 0};
+        score = 0;
+        frameCount = 0;
+        speed = 3; // Controls the snake speed 
+        updateScore();
+    }
+
+    function startGame() {
+        resetGame();
+        gameLoop = setInterval(updateGame, 100); // Keep 100ms interval
+    }
+
+    function updateGame() {
+        clearCanvas();
+
+        // Control snake speed using frameCount
+        frameCount++;
+        if (frameCount % speed === 0) {
+            moveSnake();
+        }
+
+        drawSnake();
+        drawFood();
+        checkCollision();
+        updateScore();
+    }
+
+    function clearCanvas() {
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    }
+
+    function moveSnake() {
+        const newHead = {
+            x: snake[0].x + direction.x,
+            y: snake[0].y + direction.y
+        };
+        snake.unshift(newHead);
+
+        if (newHead.x === food.x && newHead.y === food.y) {
+            score++;
+            food = generateRandomFoodPosition();
+        } else {
+            snake.pop();
+        }
+    }
+
+    function drawSnake() {
+        ctx.fillStyle = '#00ff00';
+        snake.forEach(segment => {
+            ctx.fillRect(segment.x * GRID_SIZE, segment.y * GRID_SIZE, GRID_SIZE - 1, GRID_SIZE - 1);
+        });
+    }
+
+    function drawFood() {
+        ctx.fillStyle = '#ff00ff';
+        ctx.fillRect(food.x * GRID_SIZE, food.y * GRID_SIZE, GRID_SIZE - 1, GRID_SIZE - 1);
+    }
+
+    function generateRandomFoodPosition() {
+        return {
+            x: Math.floor(Math.random() * TILE_COUNT),
+            y: Math.floor(Math.random() * TILE_COUNT)
+        };
+    }
+
+    function checkCollision() {
+        const head = snake[0];
+
+        if (isOutOfBounds(head) || isSelfCollision(head)) {
+            gameOver();
+        }
+    }
+
+    function isOutOfBounds(position) {
+        return position.x < 0 || position.x >= TILE_COUNT || position.y < 0 || position.y >= TILE_COUNT;
+    }
+
+    function isSelfCollision(head) {
+        return snake.slice(1).some(segment => segment.x === head.x && segment.y === head.y);
+    }
+
+    function gameOver() {
+        clearInterval(gameLoop);
+        alert(`Game Over! Your score: ${score}`);
+        resetGame();
+    }
+
+    function resetGame() {
+        initGame();
+    }
+
+    function updateScore() {
+        scoreElement.textContent = `Score: ${score}`;
+    }
+
+    function changeDirection(newX, newY) {
+        if ((newX === 1 && direction.x !== -1) || (newX === -1 && direction.x !== 1) ||
+            (newY === 1 && direction.y !== -1) || (newY === -1 && direction.y !== 1)) {
+            direction = {x: newX, y: newY};
+        }
+    }
+
+    function handleArrowKeyPress(e) {
+        // Prevent default scrolling behavior for arrow keys
+        if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+            e.preventDefault();
+        }
+
+        switch (e.key) {
+            case 'ArrowUp':
+                changeDirection(0, -1);
+                break;
+            case 'ArrowDown':
+                changeDirection(0, 1);
+                break;
+            case 'ArrowLeft':
+                changeDirection(-1, 0);
+                break;
+            case 'ArrowRight':
+                changeDirection(1, 0);
+                break;
+        }
+    }
+
+    // Button event listeners
+    startBtn.addEventListener('click', startGame);
+    upBtn.addEventListener('click', () => changeDirection(0, -1));
+    leftBtn.addEventListener('click', () => changeDirection(-1, 0));
+    downBtn.addEventListener('click', () => changeDirection(0, 1));
+    rightBtn.addEventListener('click', () => changeDirection(1, 0));
+
+    // Keyboard event listener
+    document.addEventListener('keydown', handleArrowKeyPress);
+
+    // Initialize and start the game
+    initGame();
+    updateGame();
+
+    // Smooth scrolling for navigation
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    // CTA button functionality
+    document.querySelector('.cta-button').addEventListener('click', () => {
+        document.getElementById('gameContainer').scrollIntoView({
+            behavior: 'smooth'
+        });
+    });
+</script>
+
+</body>
+</html>
