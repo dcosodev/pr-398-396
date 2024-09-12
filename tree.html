@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link tree proyectos dcoso</title>
+<style>
+:root {
+    --bg-light: #f0f0f0;
+    --bg-dark: #222;
+    --text-light: #333;
+    --text-dark: #f0f0f0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+    transition: background-color 0.3s ease;
+}
+
+body.light-mode {
+    background-color: var(--bg-light);
+    color: var(--text-light);
+}
+
+body.dark-mode {
+    background-color: var(--bg-dark);
+    color: var(--text-dark);
+}
+
+.container {
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 450px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.profile-pic {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin: 0 auto 30px;
+    display: block;
+    object-fit: cover;
+    border: 4px solid white;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    margin-bottom: 30px;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.links {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.link {
+    color: white;
+    padding: 16px 24px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 18px;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    cursor: pointer;
+    border-radius: 50px;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.2));
+    transition: all 0.3s ease;
+}
+
+.link:hover::before {
+    transform: translateY(-100%);
+}
+
+.link:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+}
+
+
+
+/* New styles for different link types */
+.games { background: linear-gradient(45deg, #FF416C, #FF4B2B); }
+.stores { background: linear-gradient(45deg, #11998e, #38ef7d); }
+.animations { background: linear-gradient(45deg, #8E2DE2, #4A00E0); }
+.management { background: linear-gradient(45deg, #1D976C, #93F9B9); }
+.banking { background: linear-gradient(45deg, #141E30, #243B55); }
+.random { background: linear-gradient(45deg, #FF8008, #FFC837); }
+
+.mode-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    z-index: 1000;
+}
+
+.mode-toggle:hover {
+    transform: scale(1.1) rotate(15deg);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.container {
+    animation: fadeInUp 0.8s ease-out;
+}
+
+/* Styles for categories */
+.category {
+    margin-bottom: 15px;
+}
+
+.category-btn {
+    background: linear-gradient(45deg, #090b0c, #2980b9);
+    color: white;
+    padding: 16px 24px;
+    text-align: left;
+    font-size: 18px;
+    font-weight: 600;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.category-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.2));
+    transition: all 0.3s ease;
+}
+
+.category-btn:hover::before {
+    transform: translateY(-100%);
+}
+
+.category-links {
+    display: none;
+    padding-left: 20px;
+    margin-top: 10px;
+}
+
+.category-links.active {
+    display: block;
+    animation: fadeInUp 0.5s ease-out;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 480px) {
+    .container {
+        padding: 30px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    .link, .category-btn {
+        font-size: 16px;
+        padding: 14px 20px;
+    }
+
+    .profile-pic {
+        width: 100px;
+        height: 100px;
+    }
+
+    .mode-toggle {
+        top: 15px;
+        right: 15px;
+        font-size: 24px;
+    }
+}
+
+@media screen and (max-width: 320px) {
+    .container {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 20px;
+    }
+
+    .link, .category-btn {
+        font-size: 14px;
+        padding: 12px 18px;
+    }
+
+    .profile-pic {
+        width: 80px;
+        height: 80px;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .container {
+        max-width: 550px;
+    }
+
+    h1 {
+        font-size: 32px;
+    }
+
+    .link, .category-btn {
+        font-size: 20px;
+    }
+}
+
+/* Accessibility improvements */
+.link:focus, .category-btn:focus {
+    outline: 3px solid #007bff;
+    outline-offset: 2px;
+}
+
+.mode-toggle:focus {
+    outline: 3px solid #007bff;
+    outline-offset: 2px;
+}
+</style>
+</head>
+<body class="light-mode">
+<div class="container">
+    <img src="https://via.placeholder.com/120" alt="Profile picture of a person smiling, digital art style" class="profile-pic" width="120" height="120">
+    <h1>www.dcoso.dev</h1>
+    <p>Proyectos Front-end</p>
+    <div class="links">
+        <div class="category">
+            <button class="category-btn" onclick="toggleCategory(this)">Mini juegos</button>
+            <div class="category-links">
+                <a href="https://www.dcoso.dev/snake.html" class="link games">Snake clone</a>
+                <a href="https://www.dcoso.dev/pacman.html" class="link games">Pacman clone</a>
+                <a href="https://www.dcoso.dev/monkey.html" class="link games">MonkeyType clone</a>
+            </div>
+        </div>
+        
+        <div class="category">
+            <button class="category-btn" onclick="toggleCategory(this)">Tiendas, Comercios, Inmobiliarias</button>
+            <div class="category-links">
+                <a href="#" class="link stores">Tienda Online</a>
+                <a href="#" class="link stores">Inmobiliaria XYZ</a>
+            </div>
+        </div>
+        
+        <div class="category">
+            <button class="category-btn" onclick="toggleCategory(this)">Animaciones</button>
+            <div class="category-links">
+                <a href="#" class="link animations">Animación 1</a>
+                <a href="#" class="link animations">Animación 2</a>
+            </div>
+        </div>
+        
+        <div class="category">
+            <button class="category-btn" onclick="toggleCategory(this)">Gestión y Ofimática</button>
+            <div class="category-links">
+                <a href="#" class="link management">Gestor de Tareas</a>
+                <a href="#" class="link management">Suite Ofimática Online</a>
+            </div>
+        </div>
+        
+        <div class="category">
+            <button class="category-btn" onclick="toggleCategory(this)">Soluciones Bancarias</button>
+            <div class="category-links">
+                <a href="#" class="link banking">Banca Online</a>
+                <a href="#" class="link banking">Calculadora de Préstamos</a>
+            </div>
+        </div>
+        
+        <div class="category">
+            <button class="category-btn" onclick="toggleCategory(this)">Proyectos Random</button>
+            <div class="category-links">
+                <a href="#" class="link random">Proyecto 1</a>
+                <a href="#" class="link random">Proyecto 2</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button class="mode-toggle" aria-label="Toggle dark/light mode">🌓</button>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const links = document.querySelectorAll('.link');
+    const categoryBtns = document.querySelectorAll('.category-btn');
+    const modeToggle = document.querySelector('.mode-toggle');
+    const body = document.body;
+
+    links.forEach((link, index) => {
+        link.style.animationDelay = `${index * 0.1}s`;
+        link.style.animation = 'fadeInUp 0.6s ease-out forwards';
+    });
+
+    categoryBtns.forEach((btn, index) => {
+        btn.style.animationDelay = `${index * 0.1}s`;
+        btn.style.animation = 'fadeInUp 0.6s ease-out forwards';
+    });
+
+    modeToggle.addEventListener('click', () => {
+        body.classList.toggle('dark-mode');
+        body.classList.toggle('light-mode');
+        
+        // Save the current mode preference
+        const isDarkMode = body.classList.contains('dark-mode');
+        localStorage.setItem('darkMode', isDarkMode);
+    });
+
+    // Check for saved mode preference
+    const savedDarkMode = localStorage.getItem('darkMode');
+    if (savedDarkMode === 'true') {
+        body.classList.remove('light-mode');
+        body.classList.add('dark-mode');
+    }
+
+    // Add touch support for mobile devices
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    document.addEventListener('touchstart', e => {
+        touchStartX = e.changedTouches[0].screenX;
+    });
+
+    document.addEventListener('touchend', e => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    });
+
+    function handleSwipe() {
+        const swipeThreshold = 50;
+        if (touchEndX < touchStartX - swipeThreshold) {
+            // Swipe left, switch to dark mode
+            body.classList.remove('light-mode');
+            body.classList.add('dark-mode');
+            localStorage.setItem('darkMode', true);
+        } else if (touchEndX > touchStartX + swipeThreshold) {
+            // Swipe right, switch to light mode
+            body.classList.remove('dark-mode');
+            body.classList.add('light-mode');
+            localStorage.setItem('darkMode', false);
+        }
+    }
+
+    // Add hover effect for desktop
+    links.forEach(link => {
+        link.addEventListener('mouseenter', () => {
+            link.style.transform = 'translateY(-5px)';
+        });
+        link.addEventListener('mouseleave', () => {
+            link.style.transform = 'translateY(0)';
+        });
+    });
+
+    // Add click effect
+    links.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            link.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                link.style.transform = 'scale(1)';
+                window.location.href = link.href;
+            }, 200);
+        });
+    });
+});
+
+function toggleCategory(button) {
+    const links = button.nextElementSibling;
+    links.classList.toggle('active');
+}
+</script>
+</body>
+</html>
