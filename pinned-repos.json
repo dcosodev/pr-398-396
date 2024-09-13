@@ -1,15 +1,21 @@
 [
     {
+        "name":  "document-analyzer",
+        "description":  ".NET DLL API for analyzing images, extracting metadata, and verifying authenticity - C# - Microsoft Azure Services",
+        "url":  "https://github.com/dcosodev/document-analyzer",
+        "openGraphImageUrl":  "https://opengraph.githubassets.com/db6fcca236c9b2343ba97a15bb4ea16539f5c580b7577dbbc799ba6e77497de0/dcosodev/document-analyzer"
+    },
+    {
         "name":  "news-hub",
         "description":  "🐍 Python 🗄️ SQLite 🌐 FastAPI ⚛️ React Native 🎨 Tailwind CSS",
         "url":  "https://github.com/dcosodev/news-hub",
-        "openGraphImageUrl":  "https://opengraph.githubassets.com/57825a2f96ef3b04769c856e124d3c69f90827d29e8a10ff37d5eeb695acca6f/dcosodev/news-hub"
+        "openGraphImageUrl":  "https://opengraph.githubassets.com/9dad4e680e8fbce4c0ad51b18fc13f86eb0a5b1608680fda53c1674b564a9355/dcosodev/news-hub"
     },
     {
         "name":  "monkey-type-brython",
         "description":  "Typing Game - Flask  - Brython",
         "url":  "https://github.com/dcosodev/monkey-type-brython",
-        "openGraphImageUrl":  "https://opengraph.githubassets.com/df5d7853c4c2ab75e20d417f0f56a7d9b15fee3e9301135de95db8d5cc63b0ae/dcosodev/monkey-type-brython"
+        "openGraphImageUrl":  "https://opengraph.githubassets.com/b63bfca19c12f4df53e7951e5316f03f73bae63abab6c60db13ff6082f537620/dcosodev/monkey-type-brython"
     },
     {
         "name":  "urban-traffic-monitoring-system",
@@ -28,11 +34,5 @@
         "description":  ".NET API for face detection - C# - Microsoft Azure Cognitive Services",
         "url":  "https://github.com/dcosodev/cognitve-face-detection",
         "openGraphImageUrl":  "https://opengraph.githubassets.com/8e666540dfa8e0d465f8c116eebd459448c5e905ff8c9f0d83a6a5576fc6b2ad/dcosodev/cognitve-face-detection"
-    },
-    {
-        "name":  "task-manager-pro",
-        "description":  "Task manager that synchronizes with Todoist and Trello, automatically prioritizes tasks, and tracks productivity.",
-        "url":  "https://github.com/dcosodev/task-manager-pro",
-        "openGraphImageUrl":  "https://opengraph.githubassets.com/d3a8cf974297704e9f267c1b3909ed70ac0dae6cfe03da7e4a802be21603a9f2/dcosodev/task-manager-pro"
     }
 ]
