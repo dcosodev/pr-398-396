@@ -1,3 +1,37 @@
+<!--
+
+This HTML file creates an interactive art window using the p5.js library. The script generates a dynamic canvas with various shapes and shadows based on predefined color schemes. The main functionalities include:
+
+- Setting up the canvas and color modes.
+- Creating shadow graphics with randomized window shapes.
+- Drawing blocks with different shapes and colors based on their positions.
+- Handling window resize events to adjust the canvas size.
+
+
+Key Functions:
+- setup(): Initializes the canvas and shadow graphics.
+- createShadowGraphics(w, h): Generates shadow graphics with random window shapes.
+- draw(): Main draw loop that renders the background, blocks, and shadows.
+- windowResized(): Adjusts the canvas size when the window is resized.
+- getAngle(): Calculates the angle between the mouse position and the center of the canvas.
+- drawLongShadow(offset_w, offset_h, col, theta): Draws long shadows based on the given angle.
+- getBlockPosition(i, j, iMax, jMax): Determines the position type of a block (CORNER, BORDER, MATTE, NORMAL).
+- drawBlock(block_pos, x, y, block_size): Draws a block based on its position type.
+- drawShape(size, weight, shapeIndex): Draws a shape based on the given index.
+
+Color Schemes:
+- A predefined set of color schemes used to color the shapes.
+
+HTML Structure:
+
+- Inline styles to set the body and canvas properties.
+- A script tag to include the p5.js library and the main script.
+
+-->
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
   <head>

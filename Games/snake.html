@@ -358,19 +358,19 @@ main {
         direction = {x: 0, y: 0};
         score = 0;
         frameCount = 0;
-        speed = 3; // Controls the snake speed 
+        speed = 3; 
         updateScore();
     }
 
     function startGame() {
         resetGame();
-        gameLoop = setInterval(updateGame, 100); // Keep 100ms interval
+        gameLoop = setInterval(updateGame, 100); 
     }
 
     function updateGame() {
         clearCanvas();
 
-        // Control snake speed using frameCount
+      
         frameCount++;
         if (frameCount % speed === 0) {
             moveSnake();
