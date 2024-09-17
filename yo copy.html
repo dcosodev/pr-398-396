@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="images/linux.png" type="image/x-icon">
+  <title>Daniel Conejo Sobrino | Software Developer Portfolio</title>
+  <style>
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+
+:root {
+  --primary-color: #000000;
+  --secondary-color: #f5f5f7;
+  --accent-color: #0071e3;
+  --background-color: #ffffff;
+  --text-color: #1d1d1f;
+  --link-color: #06c;
+}
+
+/* Global Box-Sizing */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  line-height: 1.47059;
+  font-weight: 400;
+  letter-spacing: -0.022em;
+}
+
+/* Dark Mode Styles */
+.dark-mode {
+  --primary-color: #f5f5f7;
+  --secondary-color: #000000;
+  --background-color: #000000;
+  --text-color: #f5f5f7;
+  --link-color: #2997ff;
+  background-image: url('./images/bg-main-dark-800w.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+.dark-mode #about,
+.dark-mode #about-me,
+.dark-mode #experience,
+.dark-mode #education {
+  background-image: url('images/bg-main-dark-800w.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* Fullpage Container */
+.fullpage-container {
+  min-height: 100vh; 
+  overflow-y: auto; 
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+}
+
+.fullpage-section {
+  min-height: 100vh;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Header Styles */
+header {
+  background-color: rgba(251, 251, 253, 0.8);
+  backdrop-filter: saturate(180%) blur(20px);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  transition: background-color 0.5s;
+}
+
+.dark-mode header {
+  background-color: rgba(29, 29, 31, 0.8);
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 22px;
+  height: 44px;
+}
+
+/* Mobile Menu Toggle Button */
+.mobile-menu-toggle {
+  display: none; 
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 20px;
+  position: relative;
+  z-index: 1001;
+}
+
+.mobile-menu-toggle span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background-color: var(--primary-color);
+  margin-bottom: 5px;
+  transition: transform 0.3s, opacity 0.3s;
+}
+
+.mobile-menu-toggle span:last-child {
+  margin-bottom: 0;
+}
+
+/* Navigation Links */
+.nav-links {
+  display: flex;
+  gap: 2rem;
+}
+
+.nav-links a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-size: 15px;
+  opacity: 0.8;
+  transition: opacity 0.3s;
+}
+
+.nav-links a:hover {
+  opacity: 1;
+}
+
+/* Theme and Language Toggle Buttons */
+.theme-toggle, .lang-toggle {
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  cursor: pointer;
+  font-size: 18px;
+  padding: 0;
+  margin-left: 10px;
+}
+
+/* Section Inner Container */
+.section-inner {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 22px;
+}
+
+/* Heading Styles */
+h1 {
+  font-size: 56px;
+  line-height: 1.07143;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+h2 {
+  font-size: 48px;
+  line-height: 1.08349;
+  font-weight: 600;
+  letter-spacing: -0.003em;
+  margin-bottom: 20px;
+}
+
+h3 {
+  font-size: 28px;
+  line-height: 1.14286;
+  font-weight: 600;
+  letter-spacing: 0.007em;
+  margin-bottom: 12px;
+}
+
+p {
+  font-size: 17px;
+  line-height: 1.47059;
+  font-weight: 400;
+  letter-spacing: -0.022em;
+  margin-bottom: 20px;
+}
+
+/* Hero Section */
+.hero {
+  background-color: #fbfbfd;
+  padding: 40px 22px; 
+}
+
+.dark-mode .hero {
+  background-color: #1d1d1f;
+}
+
+/* Enhanced Hero Image Styles */
+.hero-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 40px;
+}
+
+.hero-image img {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid linear-gradient(to right, #8a2be2, #00008b) 1;
+  border: linear-gradient(to right, #8a2be2, #00008b) 1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hero-image img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Responsive Adjustments for Hero Image */
+
+/* Tablet and Smaller Devices (max-width: 768px) */
+@media (max-width: 768px) {
+  .hero-image img {
+    width: 150px;
+    height: 150px;
+    border-width: 3px;
+  }
+}
+
+/* Mobile Devices (max-width: 480px) */
+@media (max-width: 480px) {
+  .hero-image img {
+    width: 120px;
+    height: 120px;
+    border-width: 2px;
+  }
+}
+
+/* Experience, Education, Skills Sections */
+.experience-item, .education-item, .project-item {
+  margin-bottom: 40px;
+}
+
+/* Projects Grid */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.project-item {
+  background-color: var(--secondary-color);
+  border-radius: 18px;
+  overflow: hidden;
+  transition: transform 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  height: auto; 
+  max-width: none; 
+  cursor: pointer;
+}
+
+.project-item:hover {
+  transform: scale(1.05);
+}
+
+.project-item img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+/* Skills Section */
+.skills-main-title,
+.skills-subtitle {
+  color: var(--text-color);
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.skills-category {
+  margin-bottom: 2rem;
+}
+
+.skills-category h3 {
+  font-size: 24px;
+  margin-bottom: 1rem;
+  color: var(--text-color);
+}
+
+.skill-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background-color: var(--secondary-color);
+  border-radius: 12px;
+  padding: 1rem;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  min-height: 100px; 
+}
+
+.dark-mode .skill-item {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.skill-item:hover {
+  transform: translateY(-5px);
+  background-color: var(--accent-color);
+}
+
+.dark-mode .skill-item:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.skill-icon {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 0.5rem;
+  object-fit: contain;
+}
+
+.skill-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.skills-footer {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  text-align: center;
+}
+
+.skills-footer p {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: var(--text-color);
+}
+
+.contact-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  margin-bottom: 3rem;
+}
+
+.contact-button {
+  padding: 20px 100px;
+  background-color: #8a2be2; 
+  background-image: linear-gradient( 
+    -60deg, 
+    transparent, transparent 40%,
+    #FFFFFF44 40%, #FFFFFF44 60%,
+    transparent 60%, transparent 100%);
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+  background-position-x: 150%;
+  color: #FFF;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.2rem;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-position-x 800ms;
+}
+
+.contact-button:hover {
+  background-position-x: -150%;
+  cursor: pointer;
+}
+
+/* Footer Styles */
+#citation {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+}
+
+/* Left-justify text in About Me and Work Experience */
+#about-me p, #experience p {
+  text-align: left;
+}
+
+/* Responsive Styles */
+
+/* Tablet and Smaller Devices (max-width: 768px) */
+@media (max-width: 768px) {
+  /* Show the mobile menu toggle button */
+  .mobile-menu-toggle {
+    display: block;
+  }
+
+  /* Hide navigation links by default */
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 44px; 
+    right: 0;
+    background-color: var(--background-color);
+    width: 100%;
+    padding: 1rem 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Style navigation links for mobile */
+  .nav-links a {
+    padding: 1rem 2rem;
+    border-top: 1px solid #ddd; 
+    color: var(--primary-color);
+    font-size: 16px;
+  }
+
+  /* Remove border from the first link */
+  .nav-links a:first-child {
+    border-top: none;
+  }
+
+  /* Display navigation links when the menu is open */
+  body.mobile-menu-open .nav-links {
+    display: flex;
+  }
+
+  /* Adjust the header to position relative for absolute nav-links */
+  header {
+    position: relative;
+  }
+
+  /* Projects Grid Adjustments */
+  .projects-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem; 
+    padding: 0 1rem; 
+    max-width: 100%;
+  }
+
+  .project-item img {
+    height: 200px; /* Increased image height for better visibility */
+  }
+
+  /* Typography Adjustments */
+  h1 {
+    font-size: 40px; 
+  }
+
+  h2 {
+    font-size: 32px;
+  }
+
+  h3 {
+    font-size: 20px;
+  }
+
+  p {
+    font-size: 14px;
+  }
+}
+
+/* Mobile Devices (max-width: 480px) */
+@media (max-width: 480px) {
+  /* Further adjust padding and font sizes for smaller screens */
+  .nav-links a {
+    padding: 0.8rem 1.5rem;
+    font-size: 14px;
+  }
+
+  /* Adjust the toggle button size if needed */
+  .mobile-menu-toggle {
+    width: 25px;
+    height: 18px;
+  }
+
+  .mobile-menu-toggle span {
+    height: 2px;
+    margin-bottom: 4px;
+  }
+
+  /* Projects Grid Adjustments */
+  .projects-grid {
+    grid-template-columns: 1fr; /
+    gap: 1rem; 
+    padding: 0 0.5rem; 
+  }
+
+  .project-item img {
+    height: 180px; 
+  }
+
+  /* Typography Adjustments */
+  h1 {
+    font-size: 32px; 
+  }
+
+  h2 {
+    font-size: 28px;
+  }
+
+  h3 {
+    font-size: 18px;
+  }
+
+  p {
+    font-size: 12px;
+  }
+}
+
+/* Animation for open state of mobile menu toggle */
+body.mobile-menu-open .mobile-menu-toggle span:first-child {
+  transform: translateY(7px) rotate(45deg);
+}
+
+body.mobile-menu-open .mobile-menu-toggle span:nth-child(2) {
+  opacity: 0;
+}
+
+body.mobile-menu-open .mobile-menu-toggle span:last-child {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+
+  </style>
+</head>
+<body class="dark-mode">
+  <header>
+    <nav>
+      <button class="mobile-menu-toggle" aria-label="Toggle mobile menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <a href="https://www.dcoso.dev/" style="color: white; text-decoration: none;" class="logo">dcoso.dev</a>
+      <div class="nav-links">
+        <a href="#about" data-i18n="nav.about">About</a>
+        <a href="#experience" data-i18n="nav.experience">Experience</a>
+        <a href="#education" data-i18n="nav.education">Education</a>
+        <a href="#projects" data-i18n="nav.projects">Projects</a>
+        <a href="#skills" data-i18n="nav.skills">Skills</a>
+      </div>
+      <div>
+        <button class="theme-toggle" aria-label="Toggle dark mode">🌓</button>
+        <button class="lang-toggle" aria-label="Toggle language">EN</button>
+      </div>
+    </nav>
+  </header>
+
+  <main class="fullpage-container">
+    <section id="about" class="fullpage-section hero">
+      
+      <div class="section-inner">
+        <!-- <div class="hero-image">
+          <img src="images/hero.png" alt="Profile picture of Daniel" width="500" height="500">
+        </div> -->
+        <h1 id="animated-text"></h1>
+
+        <p data-i18n="hero.description">Software Developer focused on creating innovative and efficient solutions.</p>
+       
+
+      </div>
+    </section>
+
+    <section id="about-me" class="fullpage-section">
+      <div class="section-inner">
+        <h2 data-i18n="about.title">About Me</h2>
+        <p data-i18n="about.description">Since I was 13 years old, when I assembled my first server and launched my first web service, I discovered my passion for creating technological solutions. Throughout my training as a web developer, I have not only specialized in technologies such as ASP.NET Core, C#, JavaScript, and Azure, but I have also found a strong interest in areas such as network virtualization, Docker, and cloud computing. I love continuously learning and exploring new technologies, which has led me to expand my horizons beyond web development. This year I decided to start a Degree in Network Systems Administration to strengthen my skills in managing infrastructures, networks, and virtualized systems, with the aim of continuing to grow as a comprehensive professional in the field of technology. I am convinced that staying open to learning and mastering new tools is the key to facing future challenges.</p>
+      </div>
+    </section>
+
+    <section id="experience" class="fullpage-section">
+      <div class="section-inner">
+        <h2 data-i18n="experience.title">Work Experience</h2>
+
+        <div class="experience-item">
+          <h3>BeoneBe</h3>
+          <p data-i18n="experience.consultoria.position">Internship, .NET Developer</p>
+          <p data-i18n="experience.consultoria.duration">January 2024 - July 2024</p>
+          <p data-i18n="experience.consultoria.location">Marbella, Spain</p>
+          <p data-i18n="experience.consultoria.description">
+            - Developed an API in <strong>.NET</strong> for image and document analysis using <strong>Azure</strong>.<br>
+            - Implemented metadata extraction, authenticity verification, and image modification detection.<br>
+            - Configured a deployment environment with <strong>Docker</strong> on Linux and managed <strong>TLS/SSL</strong> certificates to secure the API.<br>
+            - Created an <strong>ASP.NET</strong> client for testing and developed a proxy between the client and the API.<br>
+            - Worked on creating <strong>pipelines</strong> for continuous integration and deployment on the platform.
+          </p>
+        </div>
+
+        <div class="experience-item">
+          <h3>Telefónica</h3>
+          <p data-i18n="experience.telefonica.position">Consultative Advisor</p>
+          <p data-i18n="experience.telefonica.duration">Until 2022</p>
+          <p data-i18n="experience.telefonica.location">Barcelona, Spain</p>
+         
+          <!-- <p data-i18n="experience.telefonica.description">description</p> -->
+        </div>
+      </div>
+    </section>
+
+    <section id="education" class="fullpage-section">
+      <div class="section-inner">
+        <h2 data-i18n="education.title">Education</h2>
+
+        <div class="education-item">
+          <h3>Universidad Internacional de La Rioja (UNIR)</h3>
+          <p data-i18n="education.alfonso.degree">Higher Degree in Networked Computer Systems Administration</p>
+          <p data-i18n="education.alfonso.duration">Sept 2024 - Jul 2026</p>
+        </div>
+
+        <div class="education-item">
+          <h3>CPIFP Alan Turing, Parque Tecnológico de Andalucía (PTA)</h3>
+          <p data-i18n="education.turing.degree">Professional Certificate in Frontend Environment, Professional Certificate Microsoft Azure</p>
+          <p data-i18n="education.turing.duration">Sept 2023 - Mar 2024</p>
+        </div>
+
+        <div class="education-item">
+          <h3>ILERNA FP</h3>
+          <p data-i18n="education.ilerna.degree">Higher Degree in Web Applications Development</p>
+          <p data-i18n="education.ilerna.duration">Mar 2022 - Jul 2024</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects" class="fullpage-section">
+      <div class="section-inner">
+          <h2 data-i18n="projects.title">Projects</h2>
+          <div id="projects-grid" class="projects-grid">
+           
+          </div>
+      </div>
+  </section>
+
+  <section id="skills" class="fullpage-section">
+    <div class="section-inner">
+      <h2 data-i18n="skills.title" class="skills-main-title">Skills</h2>
+      
+      <div class="skills-category">
+        <h3 class="skills-subtitle">Languages</h3>
+        <div class="skills-grid">
+          <div class="skill-item">
+            <img src="images/csharp.png" alt="C#" class="skill-icon">
+            <span class="skill-name">C#</span>
+          </div>
+          <div class="skill-item">
+            <img src="images/javascript.png" alt="JavaScript" class="skill-icon">
+            <span class="skill-name">JavaScript</span>
+          </div>
+          <div class="skill-item">
+            <img src="images/typescript.png" alt="TypeScript" class="skill-icon">
+            <span class="skill-name">TypeScript</span>
+          </div>
+          <div class="skill-item">
+            <img src="images/python.png" alt="Python" class="skill-icon">
+            <span class="skill-name">Python</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="skills-category">
+        <h3 class="skills-subtitle">Frameworks</h3>
+        <div class="skills-grid">
+          <div class="skill-item">
+            <img src="images/aspnetcore.png" alt="ASP.NET Core" class="skill-icon">
+            <span class="skill-name">ASP.NET Core</span>
+          </div>
+          <div class="skill-item">
+            <img src="images/django-community.svg" alt="Django" class="skill-icon">
+            <span class="skill-name">Django</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="skills-category">
+        <h3 class="skills-subtitle">Databases</h3>
+        <div class="skills-grid">
+          <div class="skill-item">
+            <img src="images/mysql.png" alt="MySQL" class="skill-icon">
+            <span class="skill-name">MySQL</span>
+          </div>
+          <div class="skill-item">
+            <img src="images/mongodb.png" alt="MongoDB" class="skill-icon">
+            <span class="skill-name">MongoDB</span>
+          </div>
+          <div class="skill-item">
+            <img src="images/cosmosdb.png" alt="Cosmos DB" class="skill-icon">
+            <span class="skill-name">Cosmos DB</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="skills-category">
+        <h3 class="skills-subtitle">Tools & Others</h3>
+        <div class="skills-grid">
+          <div class="skill-item">
+            <img src="images/docker.png" alt="Docker" class="skill-icon">
+            <span class="skill-name">Docker</span>
+          </div>
+          <div class="skill-item">
+            <img src="images/postman.png" alt="Postman" class="skill-icon">
+            <span class="skill-name">Postman</span>
+          </div>
+          <div class="skill-item">
+            <img src="images/github.png" alt="GitHub" class="skill-icon">
+            <span class="skill-name">GitHub</span>
+          </div>
+          <div class="skill-item">
+            <img src="images/git.png" alt="Git" class="skill-icon">
+            <span class="skill-name">Git</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="skills-category">
+        <h3 class="skills-subtitle">Operating Systems & Development Tools</h3>
+        <div class="skills-grid">
+          <div class="skill-item">
+            <img src="images/linux.png" alt="Linux" class="skill-icon">
+            <span class="skill-name">Linux</span>
+          </div>
+          <div class="skill-item">
+            <img src="images/fedora.png" alt="Fedora" class="skill-icon">
+            <span class="skill-name">Fedora</span>
+          </div>
+          <div class="skill-item">
+            <img src="images/bash.png" alt="Bash" class="skill-icon">
+            <span class="skill-name">Bash</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="skills-category">
+        <h3 class="skills-subtitle">Web Development</h3>
+        <div class="skills-grid">
+          <div class="skill-item">
+            <img src="images/html5.png" alt="HTML5" class="skill-icon">
+            <span class="skill-name">HTML5</span>
+          </div>
+          <div class="skill-item">
+            <img src="images/sass.png" alt="Sass" class="skill-icon">
+            <span class="skill-name">Sass</span>
+          </div>
+          <div class="skill-item">
+            <img src="images/bootstrap.png" alt="Bootstrap" class="skill-icon">
+            <span class="skill-name">Bootstrap</span>
+          </div>
+          <div class="skill-item">
+            <img src="images/typescript.png" alt="TypeScript" class="skill-icon">
+            <span class="skill-name">TypeScript</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="skills-category">
+        <h3 class="skills-subtitle">Cloud Platforms</h3>
+        <div class="skills-grid">
+          <div class="skill-item">
+            <img src="images/azure.png" alt="Azure" class="skill-icon">
+            <span class="skill-name">Azure</span>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="skills-footer">
+        <p data-i18n="skills.contact">Interested in working together?</p>
+        <div class="contact-button-container">
+          <a href="mailto:your.email@example.com" class="contact-button" data-i18n="skills.contact_button">Contact Me</a>
+        </div>
+      </div>
+  </section>
+  
+  </main>
+
+  <footer>
+    <p data-i18n="footer.copyright">Copyright © 2024 Daniel Conejo Sobrino. All rights reserved.</p>
+    <div id="citation">
+      <a href="https://www.dcoso.dev/tree" style="color: white; text-decoration: none;">dcoso.dev/tree🌳</a>
+    </div>
+  </footer>
+  
+
+
+  <script>
+    const themeToggle = document.querySelector('.theme-toggle');
+    const langToggle = document.querySelector('.lang-toggle');
+    const body = document.body;
+    const header = document.querySelector('header');
+    const sections = document.querySelectorAll('.fullpage-section');
+    const navLinks = document.querySelectorAll('.nav-links a');
+
+    // Typewriter Function
+    function typeWriter(text, element, delay = 100) {
+      let i = 0;
+      element.innerHTML = '';
+      const interval = setInterval(() => {
+        if (i < text.length) {
+          element.innerHTML += text.charAt(i);
+          i++;
+        } else {
+          clearInterval(interval);
+        }
+      }, delay);
+    }
+
+    // Translations object with corrected Spanish translations
+    const translations = {
+      es: {
+        "nav.about": "Sobre mí",
+        "nav.experience": "Experiencia",
+        "nav.education": "Educación",
+        "nav.projects": "Proyectos",
+        "nav.skills": "Habilidades",
+        "hero.description": "Desarrollador de software enfocado en crear soluciones innovadoras y eficientes.",
+        "about.title": "Sobre mí",
+        "about.description": "Desde los 13 años, cuando ensamblé mi primer servidor y lancé mi primer servicio web, descubrí mi pasión por crear soluciones tecnológicas. A lo largo de mi formación como desarrollador web, no solo me he especializado en tecnologías como ASP.NET Core, C#, JavaScript y Azure, sino que también he encontrado un fuerte interés por áreas como la virtualización de redes, Docker y el cloud computing. Me encanta aprender continuamente y explorar nuevas tecnologías, lo que me ha llevado a ampliar mis horizontes más allá del desarrollo web. Este año decidí comenzar un Grado en Administración de Sistemas en Red para fortalecer mis habilidades en la gestión de infraestructuras, redes y sistemas virtualizados, con el objetivo de seguir creciendo como profesional integral en el campo de la tecnología. Estoy convencido de que mantenerme abierto a aprender y dominar nuevas herramientas es la clave para enfrentar los retos del futuro.",
+        "experience.title": "Experiencia laboral",
+        "experience.consultoria.position": "Contrato de prácticas, Desarrollador .NET",
+        "experience.consultoria.duration": "Enero 2024 - Julio 2024",
+        "experience.consultoria.location": "Marbella, España",
+        "experience.consultoria.description": "- Desarrollé una API en <strong>.NET</strong> para el análisis de imágenes y documentos utilizando <strong>Azure</strong>.<br>- Implementé la extracción de metadatos, verificación de autenticidad y detección de modificaciones en imágenes.<br>- Configuré un entorno de despliegue con <strong>Docker</strong> en Linux y gestioné certificados <strong>TLS/SSL</strong> para asegurar la API.<br>- Creé un cliente <strong>ASP.NET</strong> para pruebas y desarrollé un proxy entre el cliente y la API.<br>- Trabajé en la creación de <strong>pipelines</strong> para la integración y despliegue continuo en la plataforma.",
+        "experience.telefonica.position": "Asesor Consultivo",
+        "experience.telefonica.duration": "Hasta 2022",
+        "experience.telefonica.location": "Barcelona, España",
+        "education.title": "Educación",
+        "education.ilerna.degree": "Grado Superior en Desarrollo de Aplicaciones Web",
+        "education.ilerna.duration": "Mar 2022 - Jul 2024",
+        "education.turing.degree": "Certificado Profesional en Entorno Frontend, Certificado Profesional Microsoft Azure",
+        "education.turing.duration": "Sept 2023 - Mar 2024",
+        "education.alfonso.degree": "Grado Superior en Administración de Sistemas Informáticos en Red",
+        "education.alfonso.duration": "Sept 2024 - Jul 2026",
+        "projects.title": "Proyectos",
+        "projects.azure": "Desarrollo y despliegue de aplicaciones en Microsoft Azure",
+        "projects.aspnet": "Aplicaciones Backend con ASP.NET Core",
+        "projects.webdev": "Desarrollo Frontend con JavaScript y AngularJS",
+        "skills.title": "Habilidades",
+        "skills.contact": "¿Interesado en trabajar juntos?",
+        "skills.contact_button": "Contáctame",
+        "footer.copyright": "",
+        "hero.animated_text": "Hola, soy Daniel Conejo Sobrino"
+      },
+      en: {
+        "nav.about": "About",
+        "nav.experience": "Experience",
+        "nav.education": "Education",
+        "nav.projects": "Projects",
+        "nav.skills": "Skills",
+        "hero.description": "Software Developer focused on creating innovative and efficient solutions.",
+        "about.title": "About Me",
+        "about.description": "Since I was 13 years old, when I assembled my first server and launched my first web service, I discovered my passion for creating technological solutions. Throughout my training as a web developer, I have not only specialized in technologies such as ASP.NET Core, C#, JavaScript, and Azure, but I have also found a strong interest in areas such as network virtualization, Docker, and cloud computing. I love continuously learning and exploring new technologies, which has led me to expand my horizons beyond web development. This year I decided to start a Degree in Network Systems Administration to strengthen my skills in managing infrastructures, networks, and virtualized systems, with the aim of continuing to grow as a comprehensive professional in the field of technology. I am convinced that staying open to learning and mastering new tools is the key to facing future challenges.",
+        "experience.title": "Work Experience",
+        "experience.consultoria.position": "Internship, .NET Developer",
+        "experience.consultoria.duration": "January 2024 - July 2024",
+        "experience.consultoria.location": "Marbella, Spain",
+        "experience.consultoria.description": "- Developed an API in <strong>.NET</strong> for image and document analysis using <strong>Azure</strong>.<br>- Implemented metadata extraction, authenticity verification, and image modification detection.<br>- Configured a deployment environment with <strong>Docker</strong> on Linux and managed <strong>TLS/SSL</strong> certificates to secure the API.<br>- Created an <strong>ASP.NET</strong> client for testing and developed a proxy between the client and the API.<br>- Worked on creating <strong>pipelines</strong> for continuous integration and deployment on the platform.",
+        "experience.telefonica.position": "Consultative Advisor · Telefónica",
+        "experience.telefonica.duration": "Until 2022",
+        "experience.telefonica.location": "Barcelona, Spain",
+        "education.title": "Education",
+        "education.ilerna.degree": "Higher Degree in Web Applications Development",
+        "education.ilerna.duration": "Mar 2022 - Jul 2024",
+        "education.turing.degree": "Professional Certificate in Frontend Environment, Professional Certificate Microsoft Azure",
+        "education.turing.duration": "Sept 2023 - Mar 2024",
+        "education.alfonso.degree": "Higher Degree in Networked Computer Systems Administration",
+        "education.alfonso.duration": "Sept 2024 - Jul 2026",
+        "projects.title": "Projects",
+        "projects.azure": "Development and deployment of applications on Microsoft Azure",
+        "projects.aspnet": "Backend applications with ASP.NET Core",
+        "projects.webdev": "Frontend development with JavaScript and AngularJS",
+        "skills.title": "Skills",
+        "skills.contact": "Interested in working together?",
+        "skills.contact_button": "Contact Me",
+        "footer.copyright": "",
+        "hero.animated_text": "Hello, I'm Daniel Conejo Sobrino"
+      }
+    };
+    
+    
+    let currentLang = 'en'; // Default language set to English
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      document.querySelectorAll('[data-i18n]').forEach(elem => {
+        const key = elem.getAttribute('data-i18n');
+        elem.innerHTML = translations[lang][key];
+      });
+      langToggle.textContent = lang.toUpperCase();
+
+      // Start typewriter animation for animated-text
+      const animatedTextElement = document.getElementById('animated-text');
+      const animatedText = translations[lang]['hero.animated_text'] || '';
+      typeWriter(animatedText, animatedTextElement, 100);
+    }
+
+    langToggle.textContent = currentLang.toUpperCase();
+
+    langToggle.addEventListener('click', () => {
+      const newLang = currentLang === 'es' ? 'en' : 'es';
+      setLanguage(newLang);
+    });
+
+    // Mobile menu functionality
+    const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+    const navLinksContainer = document.querySelector('.nav-links');
+
+    mobileMenuToggle.addEventListener('click', () => {
+      document.body.classList.toggle('mobile-menu-open');
+    });
+
+    navLinksContainer.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        document.body.classList.remove('mobile-menu-open');
+      });
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!navLinksContainer.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+        document.body.classList.remove('mobile-menu-open');
+      }
+    });
+
+    // Theme Toggle Functionality
+    themeToggle.innerHTML = body.classList.contains('dark-mode') 
+      ? '<img src="images/sun.png" alt="Light mode" width="20" height="20">'
+      : '<img src="images/moon.png" alt="Dark mode" width="20" height="20">';
+    themeToggle.setAttribute('aria-label', body.classList.contains('dark-mode') ? 'Toggle light mode' : 'Toggle dark mode');
+
+    themeToggle.addEventListener('click', () => {
+      body.classList.toggle('dark-mode');
+      
+      if (body.classList.contains('dark-mode')) {
+        themeToggle.innerHTML = '<img src="images/sun.png" alt="Light mode" width="20" height="20">';
+        themeToggle.setAttribute('aria-label', 'Toggle light mode');
+      } else {
+        themeToggle.innerHTML = '<img src="images/moon.png" alt="Dark mode" width="20" height="20">';
+        themeToggle.setAttribute('aria-label', 'Toggle dark mode');
+      }
+    });
+
+    // Navigation Link Activation on Scroll
+    function activateNavLink(index) {
+      navLinks.forEach(link => link.classList.remove('active'));
+      if (navLinks[index]) {
+        navLinks[index].classList.add('active');
+      }
+    }
+
+    function handleScroll() {
+      const scrollPosition = window.pageYOffset;
+      sections.forEach((section, index) => {
+        if (scrollPosition >= section.offsetTop - 50 && scrollPosition < section.offsetTop + section.offsetHeight - 50) {
+          activateNavLink(index);
+        }
+      });
+    }
+
+    window.addEventListener('scroll', handleScroll);
+
+    // Smooth Scrolling for Anchor Links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          targetElement.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+
+    // Header Background Change on Scroll
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 0) {
+        header.style.backgroundColor = body.classList.contains('dark-mode') 
+          ? 'rgba(29, 29, 31, 0.8)' 
+          : 'rgba(251, 251, 253, 0.8)';
+      } else {
+        header.style.backgroundColor = 'transparent';
+      }
+    });
+
+    // Initialize with default language
+    setLanguage(currentLang);
+
+    const pinnedRepos = [
+    {
+        "name":  "document-analyzer",
+        "description":  ".NET DLL API for analyzing images, extracting metadata, and verifying authenticity - C# - Microsoft Azure Services",
+        "url":  "https://github.com/dcosodev/document-analyzer",
+        "openGraphImageUrl":  "https://opengraph.githubassets.com/db6fcca236c9b2343ba97a15bb4ea16539f5c580b7577dbbc799ba6e77497de0/dcosodev/document-analyzer"
+    },
+    {
+        "name":  "news-hub",
+        "description":  "🐍 Python 🗄️ SQLite 🌐 FastAPI ⚛️ React Native 🎨 Tailwind CSS",
+        "url":  "https://github.com/dcosodev/news-hub",
+        "openGraphImageUrl":  "https://opengraph.githubassets.com/9dad4e680e8fbce4c0ad51b18fc13f86eb0a5b1608680fda53c1674b564a9355/dcosodev/news-hub"
+    },
+    {
+        "name":  "monkey-type-brython",
+        "description":  "Typing Game - Flask  - Brython",
+        "url":  "https://github.com/dcosodev/monkey-type-brython",
+        "openGraphImageUrl":  "https://opengraph.githubassets.com/b63bfca19c12f4df53e7951e5316f03f73bae63abab6c60db13ff6082f537620/dcosodev/monkey-type-brython"
+    },
+    {
+        "name":  "urban-traffic-monitoring-system",
+        "description":  "🐍 Python 🗄️ SQLite 🌐Django⚛️ React Native 🎨 React Native Chart Kit",
+        "url":  "https://github.com/dcosodev/urban-traffic-monitoring-system",
+        "openGraphImageUrl":  "https://opengraph.githubassets.com/d14b866ea97e4493e011642373c9909a43fa78d5370b1ad5a90acedaea13535a/dcosodev/urban-traffic-monitoring-system"
+    },
+    {
+        "name":  "proyecto-alanturing",
+        "description":  "Spotfy Clone - Vanilla JavaScript - SCSS",
+        "url":  "https://github.com/dcosodev/proyecto-alanturing",
+        "openGraphImageUrl":  "https://opengraph.githubassets.com/1e0c53d0f6df3691332c70a7b6a5b8aa04054dd6214a2225b47a5dc3ffd1c94b/dcosodev/proyecto-alanturing"
+    },
+    {
+        "name":  "cognitve-face-detection",
+        "description":  ".NET API for face detection - C# - Microsoft Azure Cognitive Services",
+        "url":  "https://github.com/dcosodev/cognitve-face-detection",
+        "openGraphImageUrl":  "https://opengraph.githubassets.com/8e666540dfa8e0d465f8c116eebd459448c5e905ff8c9f0d83a6a5576fc6b2ad/dcosodev/cognitve-face-detection"
+    }
+];
+
+    function createProjectCard(project) {
+        return `
+            <div class="project-item" onclick="window.open('${project.url}', '_blank')">
+                <img src="${project.openGraphImageUrl || 'https://via.placeholder.com/300x200?text=No+Image'}" alt="${project.name} thumbnail" width="300" height="150">
+                <h3>${project.name}</h3>
+                <p>${project.description || 'No description available'}</p>
+            </div>
+        `;
+    }
+
+    function loadProjects() {
+        const projectsGrid = document.getElementById('projects-grid');
+        if (pinnedRepos.length > 0) {
+            projectsGrid.innerHTML = pinnedRepos.map(createProjectCard).join('');
+        } else {
+            projectsGrid.innerHTML = '<p>No projects available at the moment.</p>';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadProjects);
+  </script>
+</body>
+</html>
