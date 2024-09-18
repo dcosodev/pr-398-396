@@ -334,6 +334,8 @@ p {
   min-height: 50px;
 }
 
+
+
 .dark-mode .skill-item {
   background-color: rgba(255, 255, 255, 0.1);
 }
@@ -495,6 +497,7 @@ p {
   p {
     font-size: 14px;
   }
+
 }
 
 /* Mobile Devices (max-width: 480px) */
@@ -543,6 +546,11 @@ p {
   p {
     font-size: 12px;
   }
+  #azure-item {
+  min-width: 320px;
+  justify-content: center;
+  text-align: center;
+}
 }
 
 /* Animation for open state of mobile menu toggle */
@@ -783,7 +791,7 @@ body.mobile-menu-open .mobile-menu-toggle span:last-child {
         <div class="skills-category">
           <h3 class="skills-subtitle">Cloud Platforms</h3>
           <div class="skills-grid">
-            <div class="skill-item">
+            <div class="skill-item" id="azure-item">
               <img src="images/azure.png" alt="Azure" class="skill-icon">
               <span class="skill-name">Azure</span>
             </div>
