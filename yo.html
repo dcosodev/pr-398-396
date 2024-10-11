@@ -8,7 +8,7 @@
   <style>
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
-/* Global Variables */
+
 :root {
   --primary-color: #000000;
   --secondary-color: #f5f5f7;
@@ -41,7 +41,7 @@ body {
   letter-spacing: -0.022em;
 }
 
-/* Dark Mode Styles */
+
 .dark-mode {
   --primary-color: #f5f5f7;
   --secondary-color: #000000;
@@ -64,7 +64,7 @@ body {
   background-attachment: fixed;
 }
 
-/* Fullpage Container */
+
 .fullpage-container {
   height: 100%;
   overflow-y: auto;
@@ -82,7 +82,7 @@ body {
   justify-content: center;
 }
 
-/* Header Styles */
+
 header {
   background-color: rgba(251, 251, 253, 0.8);
   backdrop-filter: saturate(180%) blur(20px);
@@ -108,7 +108,7 @@ nav {
   height: 44px;
 }
 
-/* Mobile Menu Toggle Button */
+
 .mobile-menu-toggle {
   display: none; 
   background: none;
@@ -134,7 +134,7 @@ nav {
   margin-bottom: 0;
 }
 
-/* Navigation Links */
+
 .nav-links {
   display: flex;
   gap: 2rem;
@@ -152,7 +152,7 @@ nav {
   opacity: 1;
 }
 
-/* Theme and Language Toggle Buttons */
+
 .theme-toggle, .lang-toggle {
   background: none;
   border: none;
@@ -163,7 +163,7 @@ nav {
   margin-left: 10px;
 }
 
-/* Section Inner Container */
+
 .section-inner {
   flex-grow: 1;
   display: flex;
@@ -174,7 +174,7 @@ nav {
   padding: 0 22px;
 }
 
-/* Heading Styles */
+
 h1 {
   font-size: 56px;
   line-height: 1.07143;
@@ -208,17 +208,17 @@ p {
   margin-bottom: 20px;
 }
 
-/* Hero Section */
+
 .hero {
   background-color: #fbfbfd;
-  padding: 40px 22px; /* Ensure adequate padding */
+  padding: 40px 22px; 
 }
 
 .dark-mode .hero {
   background-color: #1d1d1f;
 }
 
-/* Enhanced Hero Image Styles */
+
 .hero-image {
   display: flex;
   justify-content: center;
@@ -241,9 +241,7 @@ p {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
 }
 
-/* Responsive Adjustments for Hero Image */
 
-/* Tablet and Smaller Devices (max-width: 768px) */
 @media (max-width: 768px) {
   .hero-image img {
     width: 150px;
@@ -252,7 +250,7 @@ p {
   }
 }
 
-/* Mobile Devices (max-width: 480px) */
+
 @media (max-width: 480px) {
   .hero-image img {
     width: 120px;
@@ -261,12 +259,12 @@ p {
   }
 }
 
-/* Experience, Education, Skills Sections */
+
 .experience-item, .education-item, .project-item {
   margin-bottom: 40px;
 }
 
-/* Projects Grid */
+
 .projects-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -299,7 +297,7 @@ p {
   object-fit: cover;
 }
 
-/* Skills Section */
+
 .skills-main-title,
 .skills-subtitle {
   color: var(--text-color);
@@ -408,7 +406,7 @@ p {
   cursor: pointer;
 }
 
-/* Footer Styles */
+
 #citation {
   position: fixed;
   bottom: 10px;
@@ -421,21 +419,19 @@ p {
   font-size: 12px;
 }
 
-/* Left-justify text in About Me and Work Experience */
+
 #about-me p, #experience p {
   text-align: left;
 }
 
-/* Responsive Styles */
 
-/* Tablet and Smaller Devices (max-width: 768px) */
 @media (max-width: 768px) {
-  /* Show the mobile menu toggle button */
+
   .mobile-menu-toggle {
     display: block;
   }
 
-  /* Hide navigation links by default */
+
   .nav-links {
     display: none;
     flex-direction: column;
@@ -448,7 +444,7 @@ p {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
 
-  /* Style navigation links for mobile */
+ 
   .nav-links a {
     padding: 1rem 2rem;
     border-top: 1px solid #ddd;
@@ -456,22 +452,22 @@ p {
     font-size: 16px;
   }
 
-  /* Remove border from the first link */
+
   .nav-links a:first-child {
     border-top: none;
   }
 
-  /* Display navigation links when the menu is open */
+  
   body.mobile-menu-open .nav-links {
     display: flex;
   }
 
-  /* Adjust the header to position relative for absolute nav-links */
+
   header {
     position: relative;
   }
 
-  /* Projects Grid Adjustments */
+
   .projects-grid {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 1.5rem;
@@ -483,7 +479,7 @@ p {
     height: 200px;
   }
 
-  /* Typography Adjustments */
+
   h1 {
     font-size: 40px;
   }
@@ -502,15 +498,15 @@ p {
 
 }
 
-/* Mobile Devices (max-width: 480px) */
+
 @media (max-width: 480px) {
-  /* Further adjust padding and font sizes for smaller screens */
+  
   .nav-links a {
     padding: 0.8rem 1.5rem;
     font-size: 14px;
   }
 
-  /* Adjust the toggle button size if needed */
+
   .mobile-menu-toggle {
     width: 25px;
     height: 18px;
@@ -521,7 +517,7 @@ p {
     margin-bottom: 4px;
   }
 
-  /* Projects Grid Adjustments */
+
   .projects-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
@@ -532,7 +528,7 @@ p {
     height: 180px;
   }
 
-  /* Typography Adjustments */
+
   h1 {
     font-size: 32px;
   }
@@ -551,7 +547,7 @@ p {
 
 }
 
-/* Animation for open state of mobile menu toggle */
+
 body.mobile-menu-open .mobile-menu-toggle span:first-child {
   transform: translateY(7px) rotate(45deg);
 }
@@ -675,7 +671,7 @@ body.mobile-menu-open .mobile-menu-toggle span:last-child {
       <div class="section-inner">
         <h2 data-i18n="projects.title">Projects</h2>
         <div id="projects-grid" class="projects-grid">
-          <!-- Aquí se cargarán los proyectos -->
+      
         </div>
       </div>
     </section>
@@ -844,7 +840,7 @@ const sections = document.querySelectorAll('.fullpage-section');
 const navLinks = document.querySelectorAll('.nav-links a');
 const fullpageContainer = document.querySelector('.fullpage-container');
 
-// Typewriter Function
+
 function typeWriter(text, element, delay = 100) {
   let i = 0;
   element.innerHTML = '';
@@ -858,7 +854,7 @@ function typeWriter(text, element, delay = 100) {
   }, delay);
 }
 
-// Translations object
+
 const translations = {
   es: {
     "nav.about": "Sobre mí",
@@ -930,7 +926,7 @@ const translations = {
   }
 };
 
-let currentLang = 'en'; // Default language set to English
+let currentLang = 'en'; 
 
 function setLanguage(lang) {
   currentLang = lang;
@@ -940,7 +936,7 @@ function setLanguage(lang) {
   });
   langToggle.textContent = lang.toUpperCase();
 
-  // Start typewriter animation for animated-text
+  
   const animatedTextElement = document.getElementById('animated-text');
   const animatedText = translations[lang]['hero.animated_text'] || '';
   typeWriter(animatedText, animatedTextElement, 100);
@@ -953,7 +949,7 @@ langToggle.addEventListener('click', () => {
   setLanguage(newLang);
 });
 
-// Mobile menu functionality
+
 const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
 const navLinksContainer = document.querySelector('.nav-links');
 
@@ -991,7 +987,7 @@ themeToggle.addEventListener('click', () => {
   }
 });
 
-// Navigation Link Activation on Scroll
+
 function activateNavLink(index) {
   navLinks.forEach(link => link.classList.remove('active'));
   if (navLinks[index]) {
@@ -1010,10 +1006,10 @@ function handleScroll() {
   });
 }
 
-// Listen to the scroll event on the main container
+
 fullpageContainer.addEventListener('scroll', handleScroll);
 
-// Smooth Scrolling for Anchor Links
+
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   anchor.addEventListener('click', function (e) {
     e.preventDefault();
@@ -1028,7 +1024,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   });
 });
 
-// Header Background Change on Scroll
+
 fullpageContainer.addEventListener('scroll', () => {
   if (fullpageContainer.scrollTop > 0) {
     header.style.backgroundColor = body.classList.contains('dark-mode') 
@@ -1039,7 +1035,7 @@ fullpageContainer.addEventListener('scroll', () => {
   }
 });
 
-// Initialize with default language
+
 setLanguage(currentLang);
 
 const pinnedRepos = [
